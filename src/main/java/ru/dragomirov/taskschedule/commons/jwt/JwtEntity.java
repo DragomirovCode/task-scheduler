@@ -6,9 +6,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import ru.dragomirov.taskschedule.auth.User;
 
-
 import java.util.Collection;
-import java.util.Collections;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 public class JwtEntity implements UserDetails {
@@ -16,9 +15,10 @@ public class JwtEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.singletonList(new SimpleGrantedAuthority(user.getRoles().toString()));
+        return user.getRoles().stream()
+                .map(role -> new SimpleGrantedAuthority(role.name()))
+                .collect(Collectors.toList());
     }
-
 
     public User getPerson() {
         return this.user;

@@ -49,7 +49,7 @@ public class JwtFilter implements Filter {
                         SecurityContextHolder.getContext().setAuthentication(authToken);
                     }
                 } catch (JWTVerificationException exc) {
-                    httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST,
+                    httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED,
                             "Invalid JWT Token");
                 }
             }
