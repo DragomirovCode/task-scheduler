@@ -1,6 +1,7 @@
 package ru.dragomirov.taskschedule.auth;
 
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -34,6 +35,6 @@ public class User {
 
     private Set<Role> roles;
 
-    private List<Task> tasks;
+    //private List<Task> tasks;
 
 }
