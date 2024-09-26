@@ -9,7 +9,7 @@ import java.util.Map;
 
 
 @RestController
-@RequestMapping("/api/auth/registration")
+@RequestMapping("/api/registration")
 @RequiredArgsConstructor
 public class RegistrationController {
     private final UserService userService;

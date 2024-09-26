@@ -12,7 +12,7 @@ import ru.dragomirov.taskschedule.auth.UserTokenGeneration;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/auth/login")
+@RequestMapping("/api/login")
 @RequiredArgsConstructor
 public class LoginController {
     private final UserMapper userMapper;

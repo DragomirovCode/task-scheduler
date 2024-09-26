@@ -9,6 +9,7 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.transaction.annotation.Transactional;
 import ru.dragomirov.taskschedule.commons.DuplicateException;
 import ru.dragomirov.taskschedule.commons.ResourceNotFoundException;
@@ -44,7 +45,7 @@ public class UserService {
     @Transactional
     @Caching(put = {
             @CachePut(value = "UserService::getById", key = "#user.id"),
-            @CachePut(value = "UserService::getByUsername", key = "#user.username") }
+            @CachePut(value = "UserService::getByUsername", key = "#user.username")}
     )
     public void save(User user) {
         try {
@@ -55,19 +56,11 @@ public class UserService {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setPasswordConfirmation(passwordEncoder.encode(user.getPasswordConfirmation()));
             userRepository.save(user);
-        } catch (IllegalStateException e) {
-            throw new IllegalStateException(e.getMessage());
         } catch (DataIntegrityViolationException e) {
-            if (e.getCause() instanceof ConstraintViolationException) {
-                String message = e.getMostSpecificCause().getMessage();
-                if (message.contains("username")) {
-                    throw new DuplicateException("A user with this username already exists");
-                } else if (message.contains("email")) {
-                    throw new DuplicateException("A user with this email already exists");
-                }
-            }
+            throw new DuplicateException("A user with the same username or email already exists");
         }
     }
+
 
     @Transactional
     @Caching(put = {
