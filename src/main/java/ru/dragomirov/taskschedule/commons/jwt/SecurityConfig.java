@@ -3,9 +3,9 @@ package ru.dragomirov.taskschedule.commons.jwt;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -13,14 +13,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.AuthenticationFailureHandler;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.session.HttpSessionEventPublisher;
-import ru.dragomirov.taskschedule.auth.login.CustomAuthenticationFailureHandler;
-import ru.dragomirov.taskschedule.auth.login.CustomAuthenticationSuccessHandler;
-import org.springframework.security.web.AuthenticationEntryPoint;
 
 @Configuration
 @EnableWebSecurity
@@ -32,30 +25,22 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests(requests -> requests
-                        .requestMatchers("/login", "/registration", "/error401").permitAll()
-                        .anyRequest().authenticated()
-                )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .loginProcessingUrl("/process_login")
-                        .failureUrl("/login?error")
-                        .successHandler(customAuthenticationSuccessHandler())
-                        .failureHandler(customAuthenticationFailureHandler())
-                )
-                .logout(logout -> logout
-                        .logoutUrl("/process_logout")
-                        .logoutSuccessUrl("/login?logout")
-                        .permitAll()
-                )
+                .csrf(csrf -> csrf.disable()) // Отключаем CSRF для REST API
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .authenticationProvider(daoAuthenticationProvider());
-
-        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)) // Стратегия без сессий
+                .authorizeHttpRequests(requests -> requests
+                        .requestMatchers("/api/login", "/api/registration").permitAll() // Доступ без аутентификации
+                        .anyRequest().authenticated()) // Остальные запросы требуют аутентификации
+                .authenticationProvider(daoAuthenticationProvider()) // Настройка источника пользователей
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class); // Добавление фильтра JWT
 
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 
     @Bean
@@ -69,20 +54,5 @@ public class SecurityConfig {
         provider.setPasswordEncoder(passwordEncoder());
         provider.setUserDetailsService(myUserDetailsService);
         return provider;
-    }
-
-    @Bean
-    public HttpSessionEventPublisher httpSessionEventPublisher() {
-        return new HttpSessionEventPublisher();
-    }
-
-    @Bean
-    public AuthenticationSuccessHandler customAuthenticationSuccessHandler() {
-        return new CustomAuthenticationSuccessHandler();
-    }
-
-    @Bean
-    public AuthenticationFailureHandler customAuthenticationFailureHandler() {
-        return new CustomAuthenticationFailureHandler();
     }
 }

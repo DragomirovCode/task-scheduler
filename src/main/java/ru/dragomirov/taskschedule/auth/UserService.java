@@ -48,9 +48,10 @@ public class UserService {
         try {
             user.setRoles(Collections.singleton(Role.ROLE_USER));
             user.setPassword(passwordEncoder.encode(user.getPassword()));
+            user.setPasswordConfirmation(passwordEncoder.encode(user.getPasswordConfirmation()));
             userRepository.save(user);
         } catch (Exception e) {
-            throw new DuplicateException("");
+            e.printStackTrace();
         }
     }
 

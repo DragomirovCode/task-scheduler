@@ -1,7 +1,6 @@
 package ru.dragomirov.taskschedule.auth;
 
 import jakarta.persistence.*;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -33,8 +32,13 @@ public class User {
     @Column(name = "passwordConfirmation")
     private String passwordConfirmation;
 
+    @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
+    @Enumerated(EnumType.STRING)
     private Set<Role> roles;
 
-    //private List<Task> tasks;
+    @CollectionTable(name = "user_tasks", joinColumns = @JoinColumn(name = "task_id"))
+    @OneToMany
+    private List<Task> tasks;
 
 }

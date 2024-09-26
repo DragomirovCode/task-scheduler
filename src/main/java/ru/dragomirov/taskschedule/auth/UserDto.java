@@ -9,8 +9,6 @@ import lombok.Data;
 @Data
 public class UserDto {
 
-    public Long id;
-
     @NotBlank(message = "Name cannot be blank")
     @Size(min = 3, max = 50, message = "Name must be between 3 and 50 characters")
     @Pattern(regexp = "^[^\\s][\\S]*$", message = "Name cannot start with a space")
@@ -21,13 +19,13 @@ public class UserDto {
     @Pattern(regexp = "^[^\\s][\\S]*$", message = "Username cannot start with a space")
     public String username;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotBlank(message = "Password cannot be blank")
     @Size(min = 1, message = "Password must be at least 1 characters long")
     @Pattern(regexp = "^\\S+$", message = "Password cannot contain spaces")
     public String password;
 
-    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotBlank(message = "Password confirmation cannot be blank")
     @Size(min = 1, message = "Password confirmation must be at least 1 characters long")
     @Pattern(regexp = "^\\S+$", message = "Password confirmation cannot contain spaces")
