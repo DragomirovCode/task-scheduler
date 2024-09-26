@@ -13,28 +13,34 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name = "Users")
+@Table(name = "Users",
+        indexes = {
+                @Index(name = "idx_user_username", columnList = "username"),
+                @Index(name = "idx_user_email", columnList = "email")
+        }
+)
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "username", unique = true)
+    @Column(name = "username", unique = true, nullable = false)
     private String username;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "passwordConfirmation")
+    @Column(name = "passwordConfirmation", nullable = false)
     private String passwordConfirmation;
 
-    @Column(name = "email", unique = true)
+    @Column(name = "email", unique = true, nullable = false)
     private String email;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
     private Set<Role> roles;
 
     @CollectionTable(name = "user_tasks", joinColumns = @JoinColumn(name = "task_id"))

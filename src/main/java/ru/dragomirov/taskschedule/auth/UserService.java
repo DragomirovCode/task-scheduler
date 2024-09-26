@@ -1,5 +1,6 @@
 package ru.dragomirov.taskschedule.auth;
 
+import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -43,21 +44,28 @@ public class UserService {
     @Transactional
     @Caching(put = {
             @CachePut(value = "UserService::getById", key = "#user.id"),
-            @CachePut(value = "UserService::getByUsername", key = "#user.username")}
+            @CachePut(value = "UserService::getByUsername", key = "#user.username") }
     )
     public void save(User user) {
         try {
             if (!user.getPassword().equals(user.getPasswordConfirmation())) {
-                throw new IllegalStateException();
+                throw new IllegalStateException("Password and password confirmation do not match");
             }
             user.setRoles(Collections.singleton(Role.ROLE_USER));
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setPasswordConfirmation(passwordEncoder.encode(user.getPasswordConfirmation()));
             userRepository.save(user);
         } catch (IllegalStateException e) {
-            throw new IllegalStateException("Password and password confirmation do not match");
+            throw new IllegalStateException(e.getMessage());
         } catch (DataIntegrityViolationException e) {
-            throw new DuplicateException("A user with this username already exists");
+            if (e.getCause() instanceof ConstraintViolationException) {
+                String message = e.getMostSpecificCause().getMessage();
+                if (message.contains("username")) {
+                    throw new DuplicateException("A user with this username already exists");
+                } else if (message.contains("email")) {
+                    throw new DuplicateException("A user with this email already exists");
+                }
+            }
         }
     }
 

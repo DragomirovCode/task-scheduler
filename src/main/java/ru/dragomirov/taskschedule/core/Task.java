@@ -18,16 +18,16 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "title")
+    @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "description")
+    @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "author")
+    @Column(name = "author", nullable = false)
     private String author;
 
-    @Column(name = "status")
+    @Column(name = "status", nullable = false)
     private Status status;
 
     @Column(name = "expirationData")
