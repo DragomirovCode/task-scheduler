@@ -27,8 +27,8 @@ public class UserDto {
     @Pattern(regexp = "^\\S+$", message = "Password confirmation cannot contain spaces")
     public String passwordConfirmation;
 
-    @NotBlank(message = "Email cannot be blank")
-    @Email(message = "Incorrect email format")
-    public String email;
+   @NotBlank(message = "Email cannot be blank")
+   @Email(message = "Incorrect email format")
+   public String email;
 
 }

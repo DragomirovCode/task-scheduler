@@ -3,11 +3,7 @@ package ru.dragomirov.taskschedule.auth.registration;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import ru.dragomirov.taskschedule.auth.User;
-import ru.dragomirov.taskschedule.auth.UserDto;
-import ru.dragomirov.taskschedule.auth.UserMapper;
-import ru.dragomirov.taskschedule.auth.UserService;
-import ru.dragomirov.taskschedule.commons.jwt.JwtTokenProvider;
+import ru.dragomirov.taskschedule.auth.*;
 
 import java.util.Map;
 
@@ -18,7 +14,7 @@ import java.util.Map;
 public class RegistrationController {
     private final UserService userService;
     private final UserMapper userMapper;
-    private final JwtTokenProvider jwtTokenProvider;
+    private final UserTokenGeneration userTokenGeneration;
 
     @PostMapping
     public Map<String, String> post(
@@ -27,8 +23,9 @@ public class RegistrationController {
 
         User user = userMapper.toEntity(userDto);
         userService.save(user);
-        String token = jwtTokenProvider.generateToken(user.getUsername());
 
-        return Map.of("jwt-token", token);
+        Object token = userTokenGeneration.getToken(user);
+
+        return Map.of("jwt-token", token.toString());
     }
 }
