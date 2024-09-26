@@ -1,5 +1,6 @@
 package ru.dragomirov.taskschedule.auth.registration;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.dragomirov.taskschedule.auth.User;
@@ -21,7 +22,7 @@ public class RegistrationController {
 
     @PostMapping
     public Map<String, String> post(
-            @RequestBody UserDto userDto
+            @Valid @RequestBody UserDto userDto
     ) {
 
         User user = userMapper.toEntity(userDto);

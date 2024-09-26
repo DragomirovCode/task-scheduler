@@ -12,8 +12,6 @@ import java.time.LocalDateTime;
 @Data
 public class TaskDto {
 
-    public Long id;
-
     @NotBlank(message = "Title cannot be blank")
     @Size(min = 1, max = 50, message = "Title must be between 3 and 50 characters")
     @Pattern(regexp = "^[^\\s][\\S]*$", message = "Title cannot start with a space")

@@ -51,7 +51,7 @@ public class UserService {
             user.setPasswordConfirmation(passwordEncoder.encode(user.getPasswordConfirmation()));
             userRepository.save(user);
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new DuplicateException("A user with this username already exists");
         }
     }
 
