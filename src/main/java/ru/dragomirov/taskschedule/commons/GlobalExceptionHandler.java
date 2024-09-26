@@ -38,4 +38,10 @@ public class GlobalExceptionHandler {
         Map<String, String> error = Map.of("error", ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<Map<String, String>> handleIllegalStateException(IllegalStateException ex) {
+        Map<String, String> error = Map.of("error", ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.CONFLICT);
+    }
 }

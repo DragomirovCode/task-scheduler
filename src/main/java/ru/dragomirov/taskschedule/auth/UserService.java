@@ -5,6 +5,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,11 +47,16 @@ public class UserService {
     )
     public void save(User user) {
         try {
+            if (!user.getPassword().equals(user.getPasswordConfirmation())) {
+                throw new IllegalStateException();
+            }
             user.setRoles(Collections.singleton(Role.ROLE_USER));
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setPasswordConfirmation(passwordEncoder.encode(user.getPasswordConfirmation()));
             userRepository.save(user);
-        } catch (Exception e) {
+        } catch (IllegalStateException e) {
+            throw new IllegalStateException("Password and password confirmation do not match");
+        } catch (DataIntegrityViolationException e) {
             throw new DuplicateException("A user with this username already exists");
         }
     }
