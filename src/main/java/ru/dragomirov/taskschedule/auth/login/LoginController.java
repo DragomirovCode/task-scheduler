@@ -9,6 +9,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.*;
 import ru.dragomirov.taskschedule.auth.User;
+import ru.dragomirov.taskschedule.auth.UserDto;
+import ru.dragomirov.taskschedule.auth.UserMapper;
 import ru.dragomirov.taskschedule.commons.jwt.JwtTokenProvider;
 
 import java.util.Map;
@@ -19,11 +21,14 @@ import java.util.Map;
 public class LoginController {
     private final JwtTokenProvider jwtTokenProvider;
     private final AuthenticationManager authenticationManager;
+    private final UserMapper userMapper;
 
     @PostMapping
     public ResponseEntity<Map<String, String>> post(
-            @Valid @RequestBody User user
+            @Valid @RequestBody UserDto userDto
     ) {
+        User user = userMapper.toEntity(userDto);
+
         UsernamePasswordAuthenticationToken authInputToken =
                 new UsernamePasswordAuthenticationToken(user.getUsername(),
                         user.getPassword());
