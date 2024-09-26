@@ -1,44 +1,33 @@
 package ru.dragomirov.taskschedule.auth.registration;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import ru.dragomirov.taskschedule.auth.User;
 import ru.dragomirov.taskschedule.auth.UserDto;
 import ru.dragomirov.taskschedule.auth.UserMapper;
 import ru.dragomirov.taskschedule.auth.UserService;
+import ru.dragomirov.taskschedule.commons.jwt.JwtTokenProvider;
+
+import java.util.Map;
 
 
-@Controller
-@RequestMapping("/registration")
+@RestController
+@RequestMapping("/api/registration")
 @RequiredArgsConstructor
 public class RegistrationController {
     private final UserService userService;
     private final UserMapper userMapper;
-
-    @GetMapping
-    public String get(
-            @ModelAttribute("user") User user
-    ) {
-        return "auth/registration";
-    }
+    private final JwtTokenProvider jwtTokenProvider;
 
     @PostMapping
-    public String post(
-            @Valid @ModelAttribute("user") UserDto userDto,
-            BindingResult bindingResult
+    public Map<String, String> post(
+            @RequestBody UserDto userDto
     ) {
-        if (bindingResult.hasErrors()) {
-            return "auth/registration";
-        }
 
         User user = userMapper.toEntity(userDto);
         userService.save(user);
-        return "redirect:/login";
+        String token = jwtTokenProvider.generateToken(user.getUsername());
+
+        return Map.of("jwt-token", token);
     }
 }
