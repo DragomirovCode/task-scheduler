@@ -24,6 +24,9 @@ public class Task {
     @Column(name = "description")
     private String description;
 
+    @Column(name = "author")
+    private String author;
+
     @Column(name = "status")
     private Status status;
 

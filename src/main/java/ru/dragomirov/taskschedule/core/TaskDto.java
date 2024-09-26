@@ -21,6 +21,13 @@ public class TaskDto {
     @Size(min = 1, max = 255, message = "Description must be between 3 and 50 characters")
     @Pattern(regexp = "^[^\\s][\\S]*$", message = "Description cannot start with a space")
     public String description;
+
+    @NotBlank(message = "Author cannot be blank")
+    @Size(min = 1, max = 255, message = "Author must be between 3 and 50 characters")
+    @Pattern(regexp = "^[^\\s][\\S]*$", message = "Author cannot start with a space")
+    public String author;
+
+    @NotBlank(message = "Status cannot be blank")
     public Status status;
 
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)

@@ -16,7 +16,7 @@ import ru.dragomirov.taskschedule.commons.jwt.JwtTokenProvider;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/login")
+@RequestMapping("/api/auth/login")
 @RequiredArgsConstructor
 public class LoginController {
     private final JwtTokenProvider jwtTokenProvider;

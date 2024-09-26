@@ -20,9 +20,6 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
-    private String name;
-
     @Column(name = "username", unique = true)
     private String username;
 
@@ -31,6 +28,9 @@ public class User {
 
     @Column(name = "passwordConfirmation")
     private String passwordConfirmation;
+
+    @Column(name = "email", unique = true)
+    private String email;
 
     @ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))

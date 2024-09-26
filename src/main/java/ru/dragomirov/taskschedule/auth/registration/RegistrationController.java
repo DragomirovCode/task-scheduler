@@ -13,7 +13,7 @@ import java.util.Map;
 
 
 @RestController
-@RequestMapping("/api/registration")
+@RequestMapping("/api/auth/registration")
 @RequiredArgsConstructor
 public class RegistrationController {
     private final UserService userService;
