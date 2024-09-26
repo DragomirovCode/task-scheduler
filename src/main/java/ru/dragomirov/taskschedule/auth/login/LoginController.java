@@ -1,5 +1,6 @@
 package ru.dragomirov.taskschedule.auth.login;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,7 +22,7 @@ public class LoginController {
 
     @PostMapping
     public ResponseEntity<Map<String, String>> post(
-            @RequestBody User user
+            @Valid @RequestBody User user
     ) {
         UsernamePasswordAuthenticationToken authInputToken =
                 new UsernamePasswordAuthenticationToken(user.getUsername(),
