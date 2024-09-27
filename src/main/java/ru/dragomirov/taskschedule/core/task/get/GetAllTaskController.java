@@ -12,7 +12,7 @@ import ru.dragomirov.taskschedule.core.task.TaskService;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/tasks/getAll")
+@RequestMapping("/api/tasks/get-all")
 @RequiredArgsConstructor
 public class GetAllTaskController {
     private final TaskService taskService;
