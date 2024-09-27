@@ -24,8 +24,8 @@ public class LoginController {
     ) {
         User user = userMapper.toEntity(userDto);
 
-        Object token = userTokenGeneration.getToken(user);
+        String token = userTokenGeneration.getToken(user);
 
-        return ResponseEntity.ok(Map.of("jwt-token", token.toString()));
+        return ResponseEntity.ok(Map.of("jwt-token", token));
     }
 }

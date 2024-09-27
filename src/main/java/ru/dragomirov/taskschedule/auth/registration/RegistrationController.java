@@ -24,8 +24,8 @@ public class RegistrationController {
         User user = userMapper.toEntity(userDto);
         userService.save(user);
 
-        Object token = userTokenGeneration.getToken(user);
+        String token = userTokenGeneration.createToken(user);
 
-        return Map.of("jwt-token", token.toString());
+        return Map.of("jwt-token", token);
     }
 }
