@@ -7,7 +7,7 @@ import ru.dragomirov.taskschedule.core.task.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/tasks")
+@RequestMapping("/api/tasks/get-list-status")
 @RequiredArgsConstructor
 public class GetStatusTaskController {
     private final TaskService taskService;
