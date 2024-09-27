@@ -33,6 +33,7 @@ public class Task implements Serializable {
     @Column(name = "author", nullable = false)
     private String author;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private Status status;
 
