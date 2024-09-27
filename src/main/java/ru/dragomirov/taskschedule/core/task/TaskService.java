@@ -7,6 +7,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.dragomirov.taskschedule.auth.User;
+import ru.dragomirov.taskschedule.auth.UserService;
 import ru.dragomirov.taskschedule.commons.DuplicateException;
 import ru.dragomirov.taskschedule.core.task.Task;
 import ru.dragomirov.taskschedule.core.task.TaskRepository;
@@ -17,7 +19,8 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 public class TaskService {
-    private TaskRepository taskRepository;
+    private final TaskRepository taskRepository;
+    private final UserService userService;
 
     @Transactional(readOnly = true)
     public List<Task> getAll() {
@@ -41,9 +44,13 @@ public class TaskService {
             @CachePut(value = "TaskService::getById", key = "#task.id"),
             @CachePut(value = "TaskService::getByTitle", key = "#task.title")}
     )
-    public void save(Task task) {
+    public void save(Task task, Long userId) {
         try {
+            User user = userService.getByById(userId);
+            task.setStatus(Status.TODO);
             taskRepository.save(task);
+            user.getTasks().add(task);
+            userService.update(userId, user);
         } catch (Exception e) {
             throw new DuplicateException("");
         }
