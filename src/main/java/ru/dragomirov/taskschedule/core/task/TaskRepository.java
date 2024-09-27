@@ -1,7 +1,8 @@
-package ru.dragomirov.taskschedule.core;
+package ru.dragomirov.taskschedule.core.task;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import ru.dragomirov.taskschedule.core.task.Task;
 
 import java.util.Optional;
 

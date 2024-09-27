@@ -1,4 +1,4 @@
-package ru.dragomirov.taskschedule.core;
+package ru.dragomirov.taskschedule.core.task;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotBlank;

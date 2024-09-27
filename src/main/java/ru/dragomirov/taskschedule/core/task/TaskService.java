@@ -1,4 +1,4 @@
-package ru.dragomirov.taskschedule.core;
+package ru.dragomirov.taskschedule.core.task;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -8,6 +8,8 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.dragomirov.taskschedule.commons.DuplicateException;
+import ru.dragomirov.taskschedule.core.task.Task;
+import ru.dragomirov.taskschedule.core.task.TaskRepository;
 
 import java.util.List;
 import java.util.Optional;

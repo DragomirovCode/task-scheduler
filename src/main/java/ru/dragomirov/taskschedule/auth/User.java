@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.dragomirov.taskschedule.core.Task;
+import ru.dragomirov.taskschedule.core.task.Task;
 
 import java.io.Serializable;
 import java.util.List;

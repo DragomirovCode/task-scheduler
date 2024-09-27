@@ -1,4 +1,4 @@
-package ru.dragomirov.taskschedule.core;
+package ru.dragomirov.taskschedule.core.task;
 
 import jakarta.persistence.*;
 import lombok.Getter;
