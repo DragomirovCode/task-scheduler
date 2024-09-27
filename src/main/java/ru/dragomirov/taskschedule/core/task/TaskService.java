@@ -10,8 +10,6 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.dragomirov.taskschedule.auth.User;
 import ru.dragomirov.taskschedule.auth.UserService;
 import ru.dragomirov.taskschedule.commons.DuplicateException;
-import ru.dragomirov.taskschedule.core.task.Task;
-import ru.dragomirov.taskschedule.core.task.TaskRepository;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,6 +29,12 @@ public class TaskService {
     @Cacheable(value = "TaskService::getById", key = "#id")
     public Optional<Task> getById(Long id) {
         return taskRepository.findById(id);
+    }
+
+    @Transactional(readOnly = true)
+    @Cacheable(value = "TaskService::getByStatus", key = "#status")
+    public List<Task> getByStatus(Status status) {
+        return taskRepository.findByStatus(status);
     }
 
     @Transactional(readOnly = true)
