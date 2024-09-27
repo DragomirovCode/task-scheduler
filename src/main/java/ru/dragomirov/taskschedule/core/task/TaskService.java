@@ -38,6 +38,12 @@ public class TaskService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "TaskService::getByAuthor", key = "#author")
+    public List<Task> getByAuthor(String author) {
+        return taskRepository.findByAuthor(author);
+    }
+
+    @Transactional(readOnly = true)
     @Cacheable(value = "TaskService::getByTitle", key = "#title")
     public Optional<Task> getByTitle(String title) {
         return taskRepository.findByTitle(title);
