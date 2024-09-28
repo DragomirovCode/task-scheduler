@@ -10,9 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.dragomirov.taskschedule.auth.User;
 import ru.dragomirov.taskschedule.auth.UserService;
 import ru.dragomirov.taskschedule.commons.DuplicateException;
+import ru.dragomirov.taskschedule.commons.ResourceNotFoundException;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -32,8 +32,9 @@ public class TaskService {
 
     @Transactional(readOnly = true)
     @Cacheable(value = "TaskService::getById", key = "#id")
-    public Optional<Task> getById(Long id) {
-        return taskRepository.findById(id);
+    public Task getById(Long id) {
+        return taskRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
     }
 
     @Transactional(readOnly = true)
@@ -50,8 +51,9 @@ public class TaskService {
 
     @Transactional(readOnly = true)
     @Cacheable(value = "TaskService::getByTitle", key = "#title")
-    public Optional<Task> getByTitle(String title) {
-        return taskRepository.findByTitle(title);
+    public Task getByTitle(String title) {
+        return taskRepository.findByTitle(title)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
     }
 
     @Transactional
