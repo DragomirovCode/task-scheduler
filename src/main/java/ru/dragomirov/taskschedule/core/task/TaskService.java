@@ -26,6 +26,11 @@ public class TaskService {
     }
 
     @Transactional(readOnly = true)
+    public List<Task> getAllByAuthorId(Long userId) {
+        return taskRepository.findAllByAuthorId(userId);
+    }
+
+    @Transactional(readOnly = true)
     @Cacheable(value = "TaskService::getById", key = "#id")
     public Optional<Task> getById(Long id) {
         return taskRepository.findById(id);
@@ -33,14 +38,14 @@ public class TaskService {
 
     @Transactional(readOnly = true)
     @Cacheable(value = "TaskService::getByStatus", key = "#status")
-    public List<Task> getByStatus(Status status) {
-        return taskRepository.findByStatus(status);
+    public List<Task> getByStatus(Status status, Long userId) {
+        return taskRepository.findByStatusAndAuthorIdOrderByAuthorId(status, userId);
     }
 
     @Transactional(readOnly = true)
     @Cacheable(value = "TaskService::getByAuthor", key = "#author")
-    public List<Task> getByAuthor(String author) {
-        return taskRepository.findByAuthor(author);
+    public List<Task> getByAuthorByUsername(String author) {
+        return taskRepository.findByAuthorUsername(author);
     }
 
     @Transactional(readOnly = true)
@@ -58,6 +63,7 @@ public class TaskService {
         try {
             User user = userService.getByById(userId);
             task.setStatus(Status.TODO);
+            task.setAuthor(user);
             taskRepository.save(task);
             user.getTasks().add(task);
             userService.update(userId, user);
