@@ -14,8 +14,6 @@ import ru.dragomirov.taskschedule.core.task.TaskDto;
 import ru.dragomirov.taskschedule.core.task.TaskMapper;
 import ru.dragomirov.taskschedule.core.task.TaskService;
 
-import java.util.Optional;
-
 @RestController
 @RequestMapping("/api/tasks/create-task")
 @RequiredArgsConstructor
@@ -30,9 +28,9 @@ public class CreateTaskController {
             Authentication authentication
     ) {
         String userName = authentication.getName();
-        Optional<User> user = userService.getByUsername(userName);
+        User user = userService.getByUsername(userName);
         Task task = taskMapper.toEntity(taskDto);
-        taskService.save(task, user.get().getId());
+        taskService.save(task, user.getId());
 
         return taskMapper.toDto(task);
     }

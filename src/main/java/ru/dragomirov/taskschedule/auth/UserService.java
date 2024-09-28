@@ -1,6 +1,5 @@
 package ru.dragomirov.taskschedule.auth;
 
-import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
@@ -9,14 +8,12 @@ import org.springframework.cache.annotation.Caching;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.UnexpectedRollbackException;
 import org.springframework.transaction.annotation.Transactional;
 import ru.dragomirov.taskschedule.commons.DuplicateException;
 import ru.dragomirov.taskschedule.commons.ResourceNotFoundException;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -31,15 +28,16 @@ public class UserService {
 
     @Transactional(readOnly = true)
     @Cacheable(value = "UserService::getById", key = "#id")
-    public User getByById(Long id) {
-        Optional<User> foundUser = userRepository.findById(id);
-        return foundUser.orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    public User getById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     @Transactional(readOnly = true)
     @Cacheable(value = "UserService::getByUsername", key = "#username")
-    public Optional<User> getByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public User getByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     @Transactional
@@ -60,7 +58,6 @@ public class UserService {
             throw new DuplicateException("A user with the same username or email already exists");
         }
     }
-
 
     @Transactional
     @Caching(put = {

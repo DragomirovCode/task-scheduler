@@ -13,7 +13,6 @@ import ru.dragomirov.taskschedule.core.task.TaskMapper;
 import ru.dragomirov.taskschedule.core.task.TaskService;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/tasks/get-all")
@@ -28,9 +27,9 @@ public class GetAllTaskController {
             Authentication authentication
     ) {
         String userName = authentication.getName();
-        Optional<User> user = userService.getByUsername(userName);
+        User user = userService.getByUsername(userName);
 
-        List<Task> taskList = taskService.getAllByAuthorId(user.get().getId());
+        List<Task> taskList = taskService.getAllByAuthorId(user.getId());
 
         return taskMapper.toDto(taskList);
     }

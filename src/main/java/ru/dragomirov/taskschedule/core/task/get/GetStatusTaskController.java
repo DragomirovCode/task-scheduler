@@ -8,7 +8,6 @@ import ru.dragomirov.taskschedule.auth.UserService;
 import ru.dragomirov.taskschedule.core.task.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/tasks/get-list-status")
@@ -24,9 +23,9 @@ public class GetStatusTaskController {
             Authentication authentication
     ) {
         String userName = authentication.getName();
-        Optional<User> user = userService.getByUsername(userName);
+        User user = userService.getByUsername(userName);
 
-        List<Task> taskList = taskService.getByStatus(status, user.get().getId());
+        List<Task> taskList = taskService.getByStatus(status, user.getId());
 
         return taskMapper.toDto(taskList);
     }

@@ -61,7 +61,7 @@ public class TaskService {
     )
     public void save(Task task, Long userId) {
         try {
-            User user = userService.getByById(userId);
+            User user = userService.getById(userId);
             task.setStatus(Status.TODO);
             task.setAuthor(user);
             taskRepository.save(task);
