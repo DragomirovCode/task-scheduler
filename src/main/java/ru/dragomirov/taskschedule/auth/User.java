@@ -44,8 +44,7 @@ public class User implements Serializable {
     @Column(name = "role", nullable = false)
     private Set<Role> roles;
 
-    @CollectionTable(name = "user_tasks", joinColumns = @JoinColumn(name = "task_id"))
-    @OneToMany
+    @OneToMany(mappedBy = "author", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Task> tasks;
 
 }

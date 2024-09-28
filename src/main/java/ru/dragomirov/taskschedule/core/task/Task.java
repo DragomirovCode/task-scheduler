@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import ru.dragomirov.taskschedule.auth.User;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "Tasks",
         indexes = {
-                @Index(name = "idx_task_author", columnList = "author"),
+                @Index(name = "idx_task_author_id", columnList = "author_id"),
                 @Index(name = "idx_task_status", columnList = "status")
         }
 )
@@ -30,8 +31,9 @@ public class Task implements Serializable {
     @Column(name = "description", nullable = false)
     private String description;
 
-    @Column(name = "author", nullable = false)
-    private String author;
+    @ManyToOne
+    @JoinColumn(name = "author_id", nullable = false)
+    private User author;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
