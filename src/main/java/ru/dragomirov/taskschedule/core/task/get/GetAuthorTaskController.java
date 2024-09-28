@@ -23,7 +23,7 @@ public class GetAuthorTaskController {
     public List<TaskDto> get(
             @PathVariable String author
     ) {
-        List<Task> taskList = taskService.getByAuthor(author);
+        List<Task> taskList = taskService.getByAuthorByUsername(author);
 
         return taskMapper.toDto(taskList);
     }
