@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 @Testcontainers
 @TestMethodOrder(OrderAnnotation.class)
-public class RegistrationTest {
+public class RegistrationServiceIntegralTest {
 
     @Autowired
     UserService userService;
