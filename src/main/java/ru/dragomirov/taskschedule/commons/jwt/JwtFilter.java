@@ -13,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import ru.dragomirov.taskschedule.commons.redis.TokenBlacklistService;
 
 import java.io.IOException;
 
@@ -21,6 +22,7 @@ import java.io.IOException;
 public class JwtFilter implements Filter {
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtUserDetailsService jwtUserDetailsService;
+    private final TokenBlacklistService tokenBlacklistService;
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain filterChain) throws IOException, ServletException {
@@ -36,6 +38,11 @@ public class JwtFilter implements Filter {
                 httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST,
                         "Invalid JWT Token in Bearer Header");
             } else {
+                if (tokenBlacklistService.isTokenBlacklisted(jwt)) {
+                    httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token is blacklisted");
+                    return;
+                }
+
                 try {
                     String username = jwtTokenProvider.validateTokenAndRetrieveClaim(jwt);
                     UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
