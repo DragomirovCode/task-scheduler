@@ -1,4 +1,4 @@
-package ru.dragomirov.taskschedule.commons.redis;
+package ru.dragomirov.taskschedule.commons.logout;
 
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;

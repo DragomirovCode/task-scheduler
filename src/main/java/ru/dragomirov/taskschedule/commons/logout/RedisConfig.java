@@ -1,4 +1,4 @@
-package ru.dragomirov.taskschedule.commons.redis;
+package ru.dragomirov.taskschedule.commons.logout;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

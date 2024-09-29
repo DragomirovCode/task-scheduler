@@ -1,4 +1,4 @@
-package ru.dragomirov.taskschedule.commons.redis;
+package ru.dragomirov.taskschedule.commons.logout;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
