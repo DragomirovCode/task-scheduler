@@ -44,4 +44,16 @@ public class GlobalExceptionHandler {
         Map<String, String> error = Map.of("error", ex.getMessage());
         return new ResponseEntity<>(error, HttpStatus.CONFLICT);
     }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleResourceNotFoundException(ResourceNotFoundException ex) {
+        Map<String, String> error = Map.of("error", ex.getMessage());
+        return new ResponseEntity<>(error,  HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ru.dragomirov.taskschedule.commons.InvalidParameterException.class)
+    public ResponseEntity<Map<String, String>> handleCustomInvalidParameterException(ru.dragomirov.taskschedule.commons.InvalidParameterException ex) {
+        Map<String, String> error = Map.of("error", ex.getMessage());
+        return new ResponseEntity<>(error, HttpStatus.BAD_REQUEST);
+    }
 }

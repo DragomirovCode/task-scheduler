@@ -16,17 +16,18 @@ public class GetStatusTaskController {
     private final TaskService taskService;
     private final TaskMapper taskMapper;
     private final UserService userService;
+    private final StatusValidationService statusValidationService;
 
     @GetMapping("/{status}")
     public List<TaskDto> get(
-            @PathVariable Status status,
+            @PathVariable String status,
             Authentication authentication
     ) {
+        Status statusEnum = statusValidationService.validateStatus(status);
         String userName = authentication.getName();
         User user = userService.getByUsername(userName);
 
-        List<Task> taskList = taskService.getByStatus(status, user.getId());
-
+        List<Task> taskList = taskService.getByStatus(statusEnum, user.getId());
         return taskMapper.toDto(taskList);
     }
 }
