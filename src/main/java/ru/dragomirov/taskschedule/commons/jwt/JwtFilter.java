@@ -35,11 +35,11 @@ public class JwtFilter implements Filter {
             String jwt = authHeader.substring(7);
 
             if (jwt.isBlank()) {
-                httpServletResponse.sendError(HttpServletResponse.SC_BAD_REQUEST,
-                        "Invalid JWT Token in Bearer Header");
+                sendErrorResponse(httpServletResponse, HttpServletResponse.SC_BAD_REQUEST, "Invalid JWT Token in Bearer Header");
+                return;
             } else {
                 if (tokenBlacklistService.isTokenBlacklisted(jwt)) {
-                    httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Token is blacklisted");
+                    sendErrorResponse(httpServletResponse, HttpServletResponse.SC_UNAUTHORIZED, "Token is blacklisted");
                     return;
                 }
 
@@ -56,12 +56,18 @@ public class JwtFilter implements Filter {
                         SecurityContextHolder.getContext().setAuthentication(authToken);
                     }
                 } catch (JWTVerificationException exc) {
-                    httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED,
-                            "Invalid JWT Token");
+                    sendErrorResponse(httpServletResponse, HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT Token");
+                    return;
                 }
             }
         }
 
         filterChain.doFilter(httpServletRequest, httpServletResponse);
+    }
+
+    private void sendErrorResponse(HttpServletResponse response, int status, String message) throws IOException {
+        response.setStatus(status);
+        response.setContentType("application/json");
+        response.getWriter().write("{\"error\": \"" + message + "\"}");
     }
 }
