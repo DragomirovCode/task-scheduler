@@ -8,14 +8,11 @@ services:
     ports:
       - "6379:6379"
     volumes:
-      - ~/data/redis:/var/lib/redis
-      - ~/data/redis/config:/usr/local/etc/redis/redis.conf
+      - ./data/redis:/var/lib/redis
     networks:
-      webapp:
-        aliases:
-          - my-redis
+      - webapp
     healthcheck:
-      test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
+      test: ["CMD", "redis-cli", "ping"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -32,13 +29,11 @@ services:
     ports:
       - "3306:3306"
     volumes:
-      - mysql_data:/var/lib/mysql
+      - ./data/mysql:/var/lib/mysql
     networks:
-      webapp:
-        aliases:
-          - my-mysql
+      - webapp
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 10s
       retries: 5
@@ -52,9 +47,7 @@ services:
     ports:
       - "2181:2181"
     networks:
-      webapp:
-        aliases:
-          - my-zookeeper
+      - webapp
 
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -63,15 +56,23 @@ services:
       - zookeeper
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_ZOOKEEPER_CONNECT: my-zookeeper:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://my-kafka:9092
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
     ports:
       - "9092:9092"
     networks:
-      webapp:
-        aliases:
-          - my-kafka
+      - webapp
+
+  frontend:
+    build:
+      context: C:/Java/pet-проекты/task-schedule/task-schedule-front
+      dockerfile: dockerfile
+    container_name: task-schedule-front
+    ports:
+      - "8081:8081"
+    networks:
+      - webapp
 
 volumes:
   mysql_data:
@@ -82,4 +83,3 @@ volumes:
 networks:
   webapp:
     driver: bridge
-    name: webapp
