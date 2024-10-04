@@ -94,10 +94,11 @@
             contentType: 'application/json',
             data: JSON.stringify(userData),
             success: function (response) {
-                alert('Registration successful! JWT Token: ' + response['jwt-token']);
+                alert('Registration successful!'); // message for windows
+                window.location.href = '/';
             },
             error: function (jqXHR) {
-                const errors = jqXHR.responseJSON.errors;
+                const errors = jqXHR.responseJSON;
                 $('#usernameError').text(errors.username ? errors.username : '');
                 $('#passwordError').text(errors.password ? errors.password : '');
                 $('#passwordConfirmationError').text(errors.passwordConfirmation ? errors.passwordConfirmation : '');
