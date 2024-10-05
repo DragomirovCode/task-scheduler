@@ -53,7 +53,7 @@ public class RegistrationControllerUnitTest {
         user.setEmail("test000@gmail.com");
         String expectedToken = "generated-jwt-token";
 
-        Mockito.when(userMapper.toEntity(Mockito.any(UserDto.class))).thenReturn(user);
+        Mockito.when(userMapper.toRegistrationEntity(Mockito.any(UserRegistrationDto.class))).thenReturn(user);
         Mockito.doNothing().when(userService).save(Mockito.any(User.class));
         Mockito.when(userTokenGeneration.createToken(Mockito.any(User.class))).thenReturn(expectedToken);
 

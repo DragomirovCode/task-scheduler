@@ -18,10 +18,10 @@ public class RegistrationController {
 
     @PostMapping
     public Map<String, String> post(
-            @Valid @RequestBody UserDto userDto
+            @Valid @RequestBody UserRegistrationDto userRegistrationDto
     ) {
 
-        User user = userMapper.toEntity(userDto);
+        User user = userMapper.toRegistrationEntity(userRegistrationDto);
         userService.save(user);
 
         String token = userTokenGeneration.createToken(user);
