@@ -94,15 +94,35 @@
             contentType: 'application/json',
             data: JSON.stringify(userData),
             success: function (response) {
-                alert('Registration successful!'); // message for windows
+                alert('Registration successful!');
+                // Перенаправляем на главную страницу при успешной регистрации
                 window.location.href = '/';
             },
             error: function (jqXHR) {
-                const errors = jqXHR.responseJSON;
-                $('#usernameError').text(errors.username ? errors.username : '');
-                $('#passwordError').text(errors.password ? errors.password : '');
-                $('#passwordConfirmationError').text(errors.passwordConfirmation ? errors.passwordConfirmation : '');
-                $('#emailError').text(errors.email ? errors.email : '');
+                try {
+                    // Парсим JSON-ответ вручную
+                    const errors = JSON.parse(jqXHR.responseText);
+
+                    // Логирование ошибок для отладки
+                    console.log(errors);
+
+                    // Обработка различных кодов ошибок
+                    if (jqXHR.status === 409) {
+                        alert("Conflict: Пользователь с такими данными уже существует.");
+                    } else if (jqXHR.status === 400) {
+                        // Отображение ошибок в соответствующих полях
+                        $('#usernameError').text(errors.username || '');
+                        $('#passwordError').text(errors.password || '');
+                        $('#passwordConfirmationError').text(errors.passwordConfirmation || '');
+                        $('#emailError').text(errors.email || '');
+                    } else {
+                        alert('Произошла непредвиденная ошибка.');
+                    }
+                } catch (e) {
+                    // Если ответ не является JSON, выводим сообщение об ошибке
+                    console.error('Ошибка при обработке ответа: ', e);
+                    alert('Не удалось получить корректный ответ от сервера.');
+                }
             }
         });
     });
