@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.dragomirov.taskschedule.auth.User;
 import ru.dragomirov.taskschedule.auth.UserRegistrationDto;
-import ru.dragomirov.taskschedule.auth.UserMapper;
+import ru.dragomirov.taskschedule.auth.UserRegistrationMapper;
 import ru.dragomirov.taskschedule.auth.UserService;
 
 @RestController
@@ -15,7 +15,7 @@ import ru.dragomirov.taskschedule.auth.UserService;
 @RequiredArgsConstructor
 public class GetInfoUserController {
     private final UserService userService;
-    private final UserMapper userMapper;
+    private final UserRegistrationMapper userRegistrationMapper;
 
     @GetMapping
     public UserRegistrationDto get(
@@ -24,6 +24,6 @@ public class GetInfoUserController {
         String userName = authentication.getName();
         User user = userService.getByUsername(userName);
 
-        return userMapper.toRegistrationDto(user);
+        return userRegistrationMapper.toDto(user);
     }
 }

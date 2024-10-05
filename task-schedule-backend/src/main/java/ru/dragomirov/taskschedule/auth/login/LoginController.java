@@ -12,18 +12,17 @@ import java.util.Map;
 @RequestMapping("/api/login")
 @RequiredArgsConstructor
 public class LoginController {
-    private final UserMapper userMapper;
+    private final UserLoginMapper userLoginMapper;
     private final UserTokenGeneration userTokenGeneration;
-    private static final System.Logger logger = System.getLogger(LoginController.class.getName());
 
     @PostMapping
     public ResponseEntity<Map<String, String>> post(
             @Valid @RequestBody UserLoginDto userLoginDto
     ) {
-        User user = userMapper.toLoginEntity(userLoginDto);
+       User user = userLoginMapper.toEntity(userLoginDto);
 
-        String token = userTokenGeneration.getToken(user);
+       String token = userTokenGeneration.getToken(user);
 
-        return ResponseEntity.ok(Map.of("jwt-token", token));
+       return ResponseEntity.ok(Map.of("jwt-token", token));
     }
 }

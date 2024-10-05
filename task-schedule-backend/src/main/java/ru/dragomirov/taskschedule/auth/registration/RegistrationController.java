@@ -13,7 +13,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class RegistrationController {
     private final UserService userService;
-    private final UserMapper userMapper;
+    private final UserRegistrationMapper userRegistrationMapper;
     private final UserTokenGeneration userTokenGeneration;
 
     @PostMapping
@@ -21,7 +21,7 @@ public class RegistrationController {
             @Valid @RequestBody UserRegistrationDto userRegistrationDto
     ) {
 
-        User user = userMapper.toRegistrationEntity(userRegistrationDto);
+        User user = userRegistrationMapper.toEntity(userRegistrationDto);
         userService.save(user);
 
         String token = userTokenGeneration.createToken(user);

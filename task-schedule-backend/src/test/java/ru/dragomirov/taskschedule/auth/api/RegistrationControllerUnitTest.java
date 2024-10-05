@@ -32,7 +32,7 @@ public class RegistrationControllerUnitTest {
     UserService userService;
 
     @MockBean
-    UserMapper userMapper;
+    UserRegistrationMapper userRegistrationMapper;
 
     @MockBean
     UserTokenGeneration userTokenGeneration;
@@ -53,7 +53,7 @@ public class RegistrationControllerUnitTest {
         user.setEmail("test000@gmail.com");
         String expectedToken = "generated-jwt-token";
 
-        Mockito.when(userMapper.toRegistrationEntity(Mockito.any(UserRegistrationDto.class))).thenReturn(user);
+        Mockito.when(userRegistrationMapper.toEntity(Mockito.any(UserRegistrationDto.class))).thenReturn(user);
         Mockito.doNothing().when(userService).save(Mockito.any(User.class));
         Mockito.when(userTokenGeneration.createToken(Mockito.any(User.class))).thenReturn(expectedToken);
 
