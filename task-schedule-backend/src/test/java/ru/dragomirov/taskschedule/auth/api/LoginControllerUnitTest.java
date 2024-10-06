@@ -32,7 +32,7 @@ public class LoginControllerUnitTest {
     UserService userService;
 
     @MockBean
-    UserRegistrationMapper userRegistrationMapper;
+    UserLoginMapper userLoginMapper; // Обновлено на UserLoginMapper
 
     @MockBean
     UserTokenGeneration userTokenGeneration;
@@ -46,22 +46,25 @@ public class LoginControllerUnitTest {
     @SneakyThrows
     @Test
     void post_shouldReturnJwtToken() {
+        // Подготовка данных
         User user = new User();
-        user.setUsername("username000");
         user.setPassword("password000");
-        user.setPasswordConfirmation("password000");
         user.setEmail("test000@gmail.com");
         String expectedToken = "generated-jwt-token";
 
-        Mockito.when(userRegistrationMapper.toEntity(Mockito.any(UserRegistrationDto.class))).thenReturn(user);
-        Mockito.doNothing().when(userService).save(Mockito.any(User.class));
-        Mockito.when(userTokenGeneration.createToken(Mockito.any(User.class))).thenReturn(expectedToken);
-        Mockito.when(userTokenGeneration.getToken(Mockito.any(User.class))).thenReturn(expectedToken);
+        // Мокаем преобразование DTO в сущность User
+        Mockito.when(userLoginMapper.toEntity(Mockito.any(UserLoginDto.class))).thenReturn(user);
+        // Мокаем получение пользователя по email
+        Mockito.when(userService.getByEmail("test000@gmail.com")).thenReturn(user);
+        // Мокаем генерацию токена
+        Mockito.when(userTokenGeneration.getToken(Mockito.any(User.class), Mockito.eq("password000")))
+                .thenReturn(expectedToken);
 
+        // Выполнение HTTP-запроса и проверка результата
         mockMvc.perform(post("/api/login")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content("{\"username\": \"username000\",\"password\": \"password000\"," +
-                                " \"passwordConfirmation\": \"password000\" ,\"email\": \"test000@gmail.com\"}"))
+                        .content("{\"password\": \"password000\"," +
+                                " \"email\": \"test000@gmail.com\"}"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.jwt-token").value(expectedToken));
     }
