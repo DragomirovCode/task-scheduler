@@ -13,26 +13,22 @@ import ru.dragomirov.taskschedule.commons.jwt.JwtTokenProvider;
 public class UserTokenGeneration {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
-    private final PasswordEncoder passwordEncoder; // Добавляем PasswordEncoder
+    private final PasswordEncoder passwordEncoder;
     private final UserService userService;
 
     public String getToken(User user, String rawPassword) {
-        // Получаем пользователя по email
         User currentUser = userService.getByEmail(user.getEmail());
 
-        // Сравниваем "сырой" пароль с хешированным
         if (!passwordEncoder.matches(rawPassword, currentUser.getPassword())) {
             throw new ResourceNotFoundException("User not found");
         }
 
-        // Если пароли совпадают, аутентифицируем пользователя
         UsernamePasswordAuthenticationToken authInputToken =
                 new UsernamePasswordAuthenticationToken(currentUser.getUsername(),
                         rawPassword);
 
         authenticationManager.authenticate(authInputToken);
 
-        // Генерируем JWT-токен
         return jwtTokenProvider.generateToken(currentUser.getUsername());
     }
 

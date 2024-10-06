@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.dragomirov.taskschedule.auth.User;
-import ru.dragomirov.taskschedule.auth.UserRegistrationDto;
-import ru.dragomirov.taskschedule.auth.UserRegistrationMapper;
+import ru.dragomirov.taskschedule.auth.registration.UserRegistrationDto;
+import ru.dragomirov.taskschedule.auth.registration.UserRegistrationMapper;
 import ru.dragomirov.taskschedule.auth.UserService;
 
 @RestController

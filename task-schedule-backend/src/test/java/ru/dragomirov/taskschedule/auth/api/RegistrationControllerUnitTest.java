@@ -13,6 +13,8 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.dragomirov.taskschedule.auth.*;
 import ru.dragomirov.taskschedule.auth.registration.RegistrationController;
+import ru.dragomirov.taskschedule.auth.registration.UserRegistrationDto;
+import ru.dragomirov.taskschedule.auth.registration.UserRegistrationMapper;
 import ru.dragomirov.taskschedule.commons.jwt.JwtFilter;
 import ru.dragomirov.taskschedule.commons.jwt.JwtTokenProvider;
 

@@ -1,4 +1,4 @@
-package ru.dragomirov.taskschedule.auth;
+package ru.dragomirov.taskschedule.auth.login;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.Email;

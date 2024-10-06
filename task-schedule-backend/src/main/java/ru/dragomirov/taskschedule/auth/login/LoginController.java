@@ -19,9 +19,9 @@ public class LoginController {
     public ResponseEntity<Map<String, String>> post(
             @Valid @RequestBody UserLoginDto userLoginDto
     ) {
-        User user = userService.getByEmail(userLoginDto.getEmail());
+        User user = userService.getByEmail(userLoginDto.email);
 
-        String token = userTokenGeneration.getToken(user, userLoginDto.getPassword());
+        String token = userTokenGeneration.getToken(user, userLoginDto.password);
 
         return ResponseEntity.ok(Map.of("jwt-token", token));
     }
