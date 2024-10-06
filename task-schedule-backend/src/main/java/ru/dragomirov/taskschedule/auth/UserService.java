@@ -47,6 +47,13 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
+    @Transactional(readOnly = true)
+    @Cacheable(value = "UserService::getByUsername", key = "#password")
+    public User getByPassword(String password) {
+        return userRepository.findByPassword(password)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
+
     @Transactional
     @Caching(put = {
             @CachePut(value = "UserService::getById", key = "#user.id"),

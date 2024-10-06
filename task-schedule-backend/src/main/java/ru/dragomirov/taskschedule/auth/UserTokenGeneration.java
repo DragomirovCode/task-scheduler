@@ -11,8 +11,10 @@ import ru.dragomirov.taskschedule.commons.jwt.JwtTokenProvider;
 public class UserTokenGeneration {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserService userService;
 
     public String getToken(User user, String rawPassword) {
+        userService.getByPassword(rawPassword);
 
         UsernamePasswordAuthenticationToken authInputToken =
                 new UsernamePasswordAuthenticationToken(user.getUsername(), rawPassword);
