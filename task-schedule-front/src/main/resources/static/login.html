@@ -82,7 +82,9 @@
             contentType: 'application/json',
             data: JSON.stringify(userData),
             success: function (response) {
-                window.location.href = '/';
+                // Сохраняем JWT токен
+                localStorage.setItem('jwtToken', response['jwt-token']);
+                window.location.href = '/main.html';
             },
             error: function (jqXHR) {
                 try {

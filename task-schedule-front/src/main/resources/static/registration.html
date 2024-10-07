@@ -95,8 +95,8 @@
             data: JSON.stringify(userData),
             success: function (response) {
                 alert('Registration successful!');
-                // Перенаправляем на главную страницу при успешной регистрации
-                window.location.href = '/';
+                localStorage.setItem('jwtToken', response['jwt-token']);
+                window.location.href = '/main.html';
             },
             error: function (jqXHR) {
                 try {
