@@ -1,10 +1,7 @@
 package ru.dragomirov.taskschedule.core.task.get;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.dragomirov.taskschedule.core.task.Task;
 import ru.dragomirov.taskschedule.core.task.TaskDto;
 import ru.dragomirov.taskschedule.core.task.TaskMapper;
@@ -19,9 +16,9 @@ public class GetAuthorTaskController {
     private final TaskService taskService;
     private final TaskMapper taskMapper;
 
-    @GetMapping("/{author}")
+    @GetMapping
     public List<TaskDto> get(
-            @PathVariable String author
+            @RequestParam String author
     ) {
         List<Task> taskList = taskService.getByAuthorByUsername(author);
 

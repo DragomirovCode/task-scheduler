@@ -18,9 +18,9 @@ public class GetStatusTaskController {
     private final UserService userService;
     private final StatusValidationService statusValidationService;
 
-    @GetMapping("/{status}")
+    @GetMapping
     public List<TaskDto> get(
-            @PathVariable String status,
+            @RequestParam String status,
             Authentication authentication
     ) {
         Status statusEnum = statusValidationService.validateStatus(status);

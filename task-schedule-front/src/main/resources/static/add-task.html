@@ -52,6 +52,9 @@
             $.ajax({
                 url: 'http://localhost:8080/api/tasks/create-task',
                 type: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+                },
                 contentType: 'application/json',
                 data: JSON.stringify(newTask),
                 success: function () {
