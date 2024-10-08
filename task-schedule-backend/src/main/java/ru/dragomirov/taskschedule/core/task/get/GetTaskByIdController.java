@@ -1,6 +1,9 @@
 package ru.dragomirov.taskschedule.core.task.get;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -18,11 +21,18 @@ public class GetTaskByIdController {
     private final UpdateTaskMapper updateTaskMapper;
 
     @GetMapping("/{id}")
-    public UpdateTaskDto get(
-            @PathVariable Long id
+    public ResponseEntity<UpdateTaskDto> get(
+            @PathVariable Long id,
+            Authentication authentication
     ) {
+        String currentUsername = authentication.getName();
         Task task = taskService.getById(id);
 
-        return updateTaskMapper.toDto(task);
+        if (!task.getAuthor().getUsername().equals(currentUsername)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        UpdateTaskDto taskDto = updateTaskMapper.toDto(task);
+        return ResponseEntity.ok(taskDto);
     }
 }
