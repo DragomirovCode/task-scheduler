@@ -16,7 +16,7 @@ import ru.dragomirov.taskschedule.core.task.update.UpdateTaskMapper;
 @RestController
 @RequestMapping("/api/tasks/")
 @RequiredArgsConstructor
-public class GetTaskByIdController {
+public class GetByIdTaskController {
     private final TaskService taskService;
     private final UpdateTaskMapper updateTaskMapper;
 
