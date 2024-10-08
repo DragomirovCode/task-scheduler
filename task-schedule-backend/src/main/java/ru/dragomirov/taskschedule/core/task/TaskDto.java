@@ -7,6 +7,8 @@ import lombok.Data;
 @Data
 public class TaskDto {
 
+    public Long id;
+
     @NotBlank(message = "Title cannot be blank")
     @Size(min = 1, max = 50, message = "Title must be between 3 and 50 characters")
     public String title;
