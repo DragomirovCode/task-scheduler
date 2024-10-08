@@ -33,6 +33,9 @@
         .dropdown-menu {
             min-width: 100px;
         }
+        .btn-action {
+            margin-right: 5px;
+        }
     </style>
 </head>
 <body>
@@ -117,11 +120,50 @@
                 success: function(tasks) {
                     $('#taskList').empty();
                     tasks.forEach(function (task) {
-                        $('#taskList').append('<div class="task-list-item"><strong>' + task.title + '</strong><br>' + task.description + '</div>');
+                        $('#taskList').append(`
+                            <div class="task-list-item">
+                                <strong>${task.title}</strong><br>
+                                ${task.description}
+                                <div class="mt-2">
+                                    <button class="btn btn-warning btn-sm btn-action update-btn" data-id="${task.id}">Update</button>
+                                    <button class="btn btn-danger btn-sm btn-action delete-btn" data-id="${task.id}">Delete</button>
+                                </div>
+                            </div>
+                        `);
+                    });
+
+                    // Handle delete button click
+                    $('.delete-btn').on('click', function() {
+                        const taskId = $(this).data('id');
+                        deleteTask(taskId);
+                    });
+
+                    // Handle update button click
+                    $('.update-btn').on('click', function() {
+                        const taskId = $(this).data('id');
+                        window.location.href = `update-task.html?id=${taskId}`;
                     });
                 },
                 error: function() {
                     alert('Error loading tasks. Please try again.');
+                }
+            });
+        }
+
+        // Delete task function
+        function deleteTask(id) {
+            $.ajax({
+                url: `http://localhost:8080/api/tasks/delete/${id}`,
+                method: 'DELETE',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+                },
+                success: function() {
+                    alert('Task deleted successfully.');
+                    loadTasks(); // Reload tasks after delete
+                },
+                error: function() {
+                    alert('Error deleting task. Please try again.');
                 }
             });
         }
