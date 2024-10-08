@@ -79,8 +79,9 @@ public class TaskService {
             @CachePut(value = "TaskService::getById", key = "#updateTask.id"),
             @CachePut(value = "TaskService::getByTitle", key = "#updateTask.title")}
     )
-    public void update(Long id, Task updateTask) {
+    public void update(Long id, Task updateTask, User user) {
         updateTask.setId(id);
+        updateTask.setAuthor(user);
         taskRepository.save(updateTask);
     }
 
