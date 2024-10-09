@@ -36,11 +36,13 @@
       <input type="hidden" id="taskStatus" required>
     </div>
 
-    <!-- Update Button -->
-    <button type="submit" class="btn btn-primary">Update</button>
+    <div class="d-flex justify-content-between">
+      <!-- Update Button -->
+      <button type="submit" class="btn btn-primary">Update</button>
 
-    <!-- Back Button -->
-    <button type="button" id="backButton" class="btn btn-secondary mt-2">Back</button>
+      <!-- Back Button -->
+      <button type="button" id="backButton" class="btn btn-secondary">Back</button>
+    </div>
   </form>
 </div>
 
@@ -62,23 +64,19 @@
       success: function(task) {
         $('#taskTitle').val(task.title);
         $('#taskDescription').val(task.description);
-        $('#statusDropdown').text(task.status); // Отобразить текущий статус
-        $('#taskStatus').val(task.status); // Заполнить скрытое поле
+        $('#statusDropdown').text(task.status);
+        $('#taskStatus').val(task.status);
       },
       error: function(jqXHR) {
-        if (jqXHR.status === 403) {
-          window.location.href = '/error-403-update-task.html'; // Redirect to 403 error page
-        } else {
-          alert('Error loading task. Please try again.');
-        }
+        alert('Error loading task. Please try again.');
       }
     });
 
     // Handle status selection
     $('.dropdown-item').on('click', function () {
       const selectedStatus = $(this).data('status');
-      $('#statusDropdown').text(selectedStatus); // Изменить текст кнопки на выбранный статус
-      $('#taskStatus').val(selectedStatus); // Установить скрытое поле для отправки
+      $('#statusDropdown').text(selectedStatus);
+      $('#taskStatus').val(selectedStatus);
     });
 
     // Handle form submit to update task
@@ -111,7 +109,7 @@
 
     // Back button logic
     $('#backButton').on('click', function () {
-      window.location.href = '/main.html'; // Go back to task list
+      window.location.href = '/main.html';
     });
   });
 </script>

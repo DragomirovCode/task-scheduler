@@ -20,21 +20,39 @@
         .task-container {
             margin-top: 20px;
         }
+        .task-column {
+            border: 1px solid #dee2e6;
+            background-color: #e3f2fd;
+            padding: 10px;
+            border-radius: 5px;
+            width: 30%;
+            margin: 0 10px;
+            float: left;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
         .task-list-item {
             border: 1px solid #dee2e6;
             padding: 10px;
-            background-color: #e3f2fd;
+            background-color: #fff;
             margin-bottom: 10px;
             border-radius: 5px;
         }
         .task-header {
             color: #007bff;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .progress {
+            height: 10px;
         }
         .dropdown-menu {
             min-width: 100px;
         }
         .btn-action {
             margin-right: 5px;
+        }
+        .clearfix {
+            clear: both;
         }
     </style>
 </head>
@@ -73,10 +91,20 @@
         </ul>
     </div>
 
-    <!-- Task List -->
-    <div id="taskList">
-        <!-- Tasks will be loaded here -->
+    <!-- Task Columns -->
+    <div class="task-columns">
+        <div class="task-column" id="todoColumn">
+            <h4 class="task-header">TODO</h4>
+        </div>
+        <div class="task-column" id="inProgressColumn">
+            <h4 class="task-header">IN_PROGRESS</h4>
+        </div>
+        <div class="task-column" id="doneColumn">
+            <h4 class="task-header">DONE</h4>
+        </div>
+        <div class="clearfix"></div>
     </div>
+
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -118,15 +146,25 @@
                     'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
                 },
                 success: function(tasks) {
-                    $('#taskList').empty();
+                    // Clear all columns
+                    $('#todoColumn, #inProgressColumn, #doneColumn').empty();
+
+                    // Append tasks to respective columns
                     tasks.forEach(function (task) {
-                        $('#taskList').append(`
+                        let progress = task.status === 'TODO' ? 0 : (task.status === 'IN_PROGRESS' ? 50 : 100);
+                        let column = task.status === 'TODO' ? '#todoColumn' : (task.status === 'IN_PROGRESS' ? '#inProgressColumn' : '#doneColumn');
+
+                        $(column).append(`
                             <div class="task-list-item">
                                 <strong>${task.title}</strong><br>
                                 ${task.description}
+                                <div class="progress mt-2">
+                                    <div class="progress-bar" role="progressbar" style="width: ${progress}%" aria-valuenow="${progress}" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
                                 <div class="mt-2">
                                     <button class="btn btn-warning btn-sm btn-action update-btn" data-id="${task.id}">Update</button>
                                     <button class="btn btn-danger btn-sm btn-action delete-btn" data-id="${task.id}">Delete</button>
+                                    <button class="btn btn-success btn-sm btn-action move-btn" data-id="${task.id}" data-current-status="${task.status}">→</button>
                                 </div>
                             </div>
                         `);
@@ -143,9 +181,49 @@
                         const taskId = $(this).data('id');
                         window.location.href = `update-task.html?id=${taskId}`;
                     });
+
+                    // Handle move button click
+                    $('.move-btn').on('click', function() {
+                        const taskId = $(this).data('id');
+                        const currentStatus = $(this).data('current-status');
+                        let newStatus;
+
+                        // Determine new status
+                        if (currentStatus === 'TODO') {
+                            newStatus = 'IN_PROGRESS';
+                        } else if (currentStatus === 'IN_PROGRESS') {
+                            newStatus = 'DONE';
+                        } else {
+                            alert('Task is already done!');
+                            return;
+                        }
+
+                        // Update task status
+                        updateTaskStatus(taskId, newStatus);
+                    });
                 },
                 error: function() {
                     alert('Error loading tasks. Please try again.');
+                }
+            });
+        }
+
+        // Update task status function
+        function updateTaskStatus(id, status) {
+            $.ajax({
+                url: `http://localhost:8080/api/tasks/update-status/${id}`,
+                method: 'PATCH',
+                headers: {
+                    'Authorization': 'Bearer ' + localStorage.getItem('jwtToken'),
+                    'Content-Type': 'application/json'
+                },
+                data: JSON.stringify({ status: status }),
+                success: function() {
+                    alert('Task status updated successfully.');
+                    loadTasks(); // Reload tasks after update
+                },
+                error: function() {
+                    alert('Error updating task status. Please try again.');
                 }
             });
         }
