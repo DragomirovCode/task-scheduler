@@ -17,4 +17,5 @@ public class TaskDto {
     @Size(min = 1, max = 255, message = "Description must be between 3 and 50 characters")
     public String description;
 
+    public String status;
 }
