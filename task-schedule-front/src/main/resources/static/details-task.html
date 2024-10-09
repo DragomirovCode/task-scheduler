@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+
+<div class="container">
+    <h2 class="mt-4">Task Details</h2>
+    <form id="taskDetailsForm">
+        <div class="mb-3">
+            <label for="taskTitle" class="form-label">Task Title</label>
+            <input type="text" class="form-control" id="taskTitle" readonly>
+        </div>
+        <div class="mb-3">
+            <label for="taskDescription" class="form-label">Task Description</label>
+            <textarea class="form-control" id="taskDescription" rows="3" readonly></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="taskStatus" class="form-label">Task Status</label>
+            <input type="text" class="form-control" id="taskStatus" readonly>
+        </div>
+
+        <!-- Back Button -->
+        <button type="button" id="backButton" class="btn btn-secondary mt-2">Back</button>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const taskId = urlParams.get('id');
+
+        // Load task details
+        $.ajax({
+            url: `http://localhost:8080/api/tasks/${taskId}`,
+            method: 'GET',
+            headers: {
+                'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
+            },
+            success: function(task) {
+                $('#taskTitle').val(task.title);
+                $('#taskDescription').val(task.description);
+                $('#taskStatus').val(task.status);
+            },
+            error: function(jqXHR) {
+                alert('Error loading task. Please try again.');
+            }
+        });
+
+        // Back button logic
+        $('#backButton').on('click', function () {
+            window.location.href = '/main.html'; // Go back to task list
+        });
+    });
+</script>
+
+</body>
+</html>
