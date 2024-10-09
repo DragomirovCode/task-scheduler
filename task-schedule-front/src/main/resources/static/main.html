@@ -9,17 +9,21 @@
         body {
             background-color: #f8f9fa;
         }
+
         .navbar {
             background-color: #007bff;
             color: white;
         }
+
         .navbar .logout-btn {
             color: white;
             background-color: #dc3545;
         }
+
         .task-container {
             margin-top: 20px;
         }
+
         .task-column {
             border: 1px solid #dee2e6;
             background-color: #e3f2fd;
@@ -30,6 +34,7 @@
             float: left;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
+
         .task-list-item {
             border: 1px solid #dee2e6;
             padding: 10px;
@@ -37,35 +42,41 @@
             margin-bottom: 10px;
             border-radius: 5px;
         }
+
         .task-header {
             color: #007bff;
             text-align: center;
             margin-bottom: 10px;
         }
+
         .progress {
             height: 10px;
         }
+
         .dropdown-menu {
             min-width: 100px;
         }
+
         .btn-action {
             margin-right: 5px;
         }
-        .task-title {
-            font-size: 16px;
-            font-weight: bold;
-        }
-        .task-description {
-            font-size: 14px;
-            margin-top: 5px;
-        }
-        .task-status {
-            margin-top: 10px;
-            font-size: 12px;
-            color: #6c757d;
-        }
+
         .clearfix {
             clear: both;
+        }
+
+        .ellipsis {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .task-list-item strong {
+            display: block;
+            max-width: 100%; /* Ограничение ширины */
+            white-space: nowrap; /* Запрет на перенос строк */
+            overflow: hidden; /* Скрытие переполнения */
+            text-overflow: ellipsis; /* Эффект многоточия */
         }
     </style>
 </head>
@@ -93,7 +104,8 @@
 
     <!-- Status Dropdown -->
     <div class="dropdown mb-3">
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="statusDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="statusDropdown" data-bs-toggle="dropdown"
+                aria-expanded="false">
             Search by Status
         </button>
         <ul class="dropdown-menu" aria-labelledby="statusDropdown">
@@ -132,12 +144,18 @@
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
             },
-            success: function(data) {
+            success: function (data) {
                 $('#user-info').text('Logged in as: ' + data.username);
             },
-            error: function() {
+            error: function () {
                 window.location.href = '/login.html';
             }
+        });
+
+        // Logout functionality
+        $('#logoutBtn').on('click', function () {
+            localStorage.removeItem('jwtToken');
+            window.location.href = '/login.html';
         });
 
         // Load tasks function
@@ -152,7 +170,7 @@
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
                 },
-                success: function(tasks) {
+                success: function (tasks) {
                     // Clear all columns
                     $('#todoColumn, #inProgressColumn, #doneColumn').empty();
 
@@ -161,77 +179,81 @@
                         let progress = task.status === 'TODO' ? 0 : (task.status === 'IN_PROGRESS' ? 50 : 100);
                         let column = task.status === 'TODO' ? '#todoColumn' : (task.status === 'IN_PROGRESS' ? '#inProgressColumn' : '#doneColumn');
 
-                        // Стрелочки для перехода вперед и назад
-                        let backButton = task.status !== 'TODO' ? `<button class="btn btn-info btn-sm btn-action move-back-btn" data-id="${task.id}" data-current-status="${task.status}">←</button>` : '';
-                        let forwardButton = task.status !== 'DONE' ? `<button class="btn btn-success btn-sm btn-action move-btn" data-id="${task.id}" data-current-status="${task.status}">→</button>` : '';
+                        // Create task HTML
+                        let taskHtml = `
+    <div class="task-list-item">
+        <strong class="ellipsis" title="${task.title}">${task.title}</strong><br>
+        <div class="ellipsis" title="${task.description}">${task.description}</div>
+        <div class="task-status">Status: ${task.status}</div>
+        <div class="progress mt-2">
+            <div class="progress-bar" role="progressbar" style="width: ${progress}%" aria-valuenow="${progress}" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+        <div class="mt-2">
+            ${task.status !== 'TODO' ? `<button class="btn btn-warning btn-sm btn-action move-back-btn" data-id="${task.id}" data-direction="backward">←</button>` : ''}
+            ${task.status !== 'DONE' ? `<button class="btn btn-success btn-sm btn-action move-btn" data-id="${task.id}" data-direction="forward">→</button>` : `<button class="btn btn-secondary btn-sm btn-action disabled">→</button>`}
+            <button class="btn btn-info btn-sm btn-action details-btn" data-id="${task.id}">Подробнее</button>
+            <button class="btn btn-warning btn-sm btn-action update-btn" data-id="${task.id}">Update</button>
+            <button class="btn btn-danger btn-sm btn-action delete-btn" data-id="${task.id}">Delete</button>
+        </div>
+    </div>
+`;
 
-                        $(column).append(`
-                            <div class="task-list-item">
-                                <div class="task-title">${task.title}</div>
-                                <div class="task-description">${task.description}</div>
-                                <div class="task-status">Status: ${task.status}</div>
-                                <div class="progress mt-2">
-                                    <div class="progress-bar" role="progressbar" style="width: ${progress}%" aria-valuenow="${progress}" aria-valuemin="0" aria-valuemax="100"></div>
-                                </div>
-                                <div class="mt-2">
-                                    ${backButton}
-                                    ${forwardButton}
-                                    <button class="btn btn-warning btn-sm btn-action update-btn" data-id="${task.id}">Update</button>
-                                    <button class="btn btn-danger btn-sm btn-action delete-btn" data-id="${task.id}">Delete</button>
-                                </div>
-                            </div>
-                        `);
+
+                        $(column).append(taskHtml);
                     });
 
                     // Handle delete button click
-                    $('.delete-btn').on('click', function() {
+                    $('.delete-btn').on('click', function () {
                         const taskId = $(this).data('id');
                         deleteTask(taskId);
                     });
 
                     // Handle update button click
-                    $('.update-btn').on('click', function() {
+                    $('.update-btn').on('click', function () {
                         const taskId = $(this).data('id');
                         window.location.href = `update-task.html?id=${taskId}`;
                     });
 
-                    // Handle move forward button click
+                    // Handle move button click (move forward)
                     $('.move-btn').on('click', function() {
                         const taskId = $(this).data('id');
-                        const currentStatus = $(this).data('current-status');
-                        let newStatus = currentStatus === 'TODO' ? 'IN_PROGRESS' : 'DONE';
-                        updateTaskStatus(taskId, newStatus);
+                        const direction = $(this).data('direction');
+                        updateTaskStatus(taskId, direction);
                     });
 
-                    // Handle move back button click
+                    // Handle move back button click (move backward)
                     $('.move-back-btn').on('click', function() {
                         const taskId = $(this).data('id');
-                        const currentStatus = $(this).data('current-status');
-                        let newStatus = currentStatus === 'IN_PROGRESS' ? 'TODO' : 'IN_PROGRESS';
-                        updateTaskStatus(taskId, newStatus);
+                        const direction = $(this).data('direction');
+                        updateTaskStatus(taskId, direction);
+                    });
+
+                    // Handle details button click
+                    $('.details-btn').on('click', function() {
+                        const taskId = $(this).data('id');
+                        window.location.href = `details-task.html?id=${taskId}`;
                     });
                 },
-                error: function() {
+                error: function () {
                     alert('Error loading tasks. Please try again.');
                 }
             });
         }
 
         // Update task status function
-        function updateTaskStatus(id, status) {
+        function updateTaskStatus(id, direction) {
             $.ajax({
-                url: `http://localhost:8080/api/tasks/update-status/${id}`,
+                url: `http://localhost:8080/api/tasks/update-status/${id}?direction=${direction}`,  // Передаем параметр direction
                 method: 'PATCH',
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('jwtToken'),
                     'Content-Type': 'application/json'
                 },
-                data: JSON.stringify({ status: status }),
-                success: function() {
+                success: function () {
                     alert('Task status updated successfully.');
                     loadTasks(); // Reload tasks after update
                 },
-                error: function() {
+                error: function () {
                     alert('Error updating task status. Please try again.');
                 }
             });
@@ -245,24 +267,23 @@
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
                 },
-                success: function() {
-                    alert('Task deleted successfully.');
-                    loadTasks(); // Reload tasks after delete
+                success: function () {
+                    loadTasks();
                 },
-                error: function() {
-                    alert('Error deleting task. Please try again.');
+                error: function () {
+                    alert('Error deleting task.');
                 }
             });
         }
 
-        // Load all tasks on page load
-        loadTasks();
-
-        // Filter tasks by status
+        // Handle status filter
         $('.dropdown-item').on('click', function () {
             const status = $(this).data('status');
             loadTasks(status);
         });
+
+        // Initial load of all tasks
+        loadTasks();
     });
 </script>
 
