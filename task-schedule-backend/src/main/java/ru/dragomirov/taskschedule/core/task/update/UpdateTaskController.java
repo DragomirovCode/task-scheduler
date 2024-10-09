@@ -2,6 +2,7 @@ package ru.dragomirov.taskschedule.core.task.update;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -30,6 +31,10 @@ public class UpdateTaskController {
 
         String userName = authentication.getName();
         User user = userService.getByUsername(userName);
+
+        if (!taskService.getById(id).getAuthor().getUsername().equals(userName)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
 
         Task updateTask = updateTaskMapper.toEntity(taskDto);
         taskService.update(id, updateTask, user);
