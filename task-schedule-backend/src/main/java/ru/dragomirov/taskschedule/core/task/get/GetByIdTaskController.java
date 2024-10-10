@@ -9,19 +9,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.dragomirov.taskschedule.core.task.Task;
+import ru.dragomirov.taskschedule.core.task.TaskDto;
+import ru.dragomirov.taskschedule.core.task.TaskMapper;
 import ru.dragomirov.taskschedule.core.task.TaskService;
-import ru.dragomirov.taskschedule.core.task.update.UpdateTaskDto;
-import ru.dragomirov.taskschedule.core.task.update.UpdateTaskMapper;
 
 @RestController
 @RequestMapping("/api/tasks/")
 @RequiredArgsConstructor
 public class GetByIdTaskController {
     private final TaskService taskService;
-    private final UpdateTaskMapper updateTaskMapper;
+    private final TaskMapper taskMapper;
 
     @GetMapping("/{id}")
-    public ResponseEntity<UpdateTaskDto> get(
+    public ResponseEntity<TaskDto> get(
             @PathVariable Long id,
             Authentication authentication
     ) {
@@ -32,7 +32,7 @@ public class GetByIdTaskController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        UpdateTaskDto taskDto = updateTaskMapper.toDto(task);
+        TaskDto taskDto = taskMapper.toDto(task);
         return ResponseEntity.ok(taskDto);
     }
 }

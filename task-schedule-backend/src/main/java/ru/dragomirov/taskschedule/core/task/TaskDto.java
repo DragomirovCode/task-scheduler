@@ -18,4 +18,8 @@ public class TaskDto {
     public String description;
 
     public String status;
+
+    @NotBlank(message = "ExpirationData cannot be blank")
+    public String expirationData;
+
 }

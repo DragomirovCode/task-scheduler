@@ -27,6 +27,10 @@
             <label for="taskDescription" class="form-label">Task Description</label>
             <textarea id="taskDescription" class="form-control" placeholder="Enter task description"></textarea>
         </div>
+        <div class="mb-3">
+            <label for="taskExpiration" class="form-label">Expiration Date & Time</label>
+            <input type="datetime-local" id="taskExpiration" class="form-control">
+        </div>
         <div class="d-grid gap-2 mb-3">
             <button type="button" id="addTaskBtn" class="btn btn-primary">Add Task</button>
         </div>
@@ -42,11 +46,13 @@
     $('#addTaskBtn').on('click', function () {
         const taskTitle = $('#taskTitle').val();
         const taskDescription = $('#taskDescription').val();
+        const taskExpiration = $('#taskExpiration').val(); // Получение значения времени
 
-        if (taskTitle && taskDescription) {
+        if (taskTitle && taskDescription && taskExpiration) {
             const newTask = {
                 title: taskTitle,
-                description: taskDescription
+                description: taskDescription,
+                expirationData: taskExpiration // Добавляем expirationData
             };
 
             $.ajax({
@@ -66,7 +72,7 @@
                 }
             });
         } else {
-            alert('Please fill in both fields');
+            alert('Please fill in all fields');
         }
     });
 </script>

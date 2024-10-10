@@ -29,6 +29,7 @@ public class CreateTaskController {
     ) {
         String userName = authentication.getName();
         User user = userService.getByUsername(userName);
+
         Task task = taskMapper.toEntity(taskDto);
         taskService.save(task, user.getId());
 
