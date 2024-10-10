@@ -208,7 +208,7 @@
                         <div class="mt-2">
                             ${task.status !== 'TODO' ? `<button class="btn btn-secondary btn-sm btn-action move-back-btn" data-id="${task.id}" data-direction="backward">←</button>` : ''}
                             ${task.status !== 'DONE' ? `<button class="btn btn-success btn-sm btn-action move-btn" data-id="${task.id}" data-direction="forward">→</button>` : ''}
-                            <button class="btn btn-info btn-sm btn-action details-btn" data-id="${task.id}">Подробнее</button>
+                            <button class="btn btn-info btn-sm btn-action details-btn" data-id="${task.id}">Details</button>
                             <button class="btn btn-warning btn-sm btn-action update-btn" data-id="${task.id}">Update</button>
                             <button class="btn btn-danger btn-sm btn-action delete-btn" data-id="${task.id}">Delete</button>
                         </div>
