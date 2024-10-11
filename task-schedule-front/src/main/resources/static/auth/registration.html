@@ -108,7 +108,7 @@
 
                     // Обработка различных кодов ошибок
                     if (jqXHR.status === 409) {
-                        alert("Conflict: A user with such data already exists.");
+                        window.location.href = '../task-error/auth/registration/error-409-registration.html';
                     } else if (jqXHR.status === 400) {
                         // Отображение ошибок в соответствующих полях
                         $('#usernameError').text(errors.username || '');
@@ -116,12 +116,10 @@
                         $('#passwordConfirmationError').text(errors.passwordConfirmation || '');
                         $('#emailError').text(errors.email || '');
                     } else {
-                        alert('An unexpected error has occurred.');
+                        window.location.href = '../task-error/auth/registration/error-500-registration.html';
                     }
                 } catch (e) {
-                    // Если ответ не является JSON, выводим сообщение об ошибке
                     console.error('Error processing the response: ', e);
-                    alert('Failed to get a correct response from the server.');
                 }
             }
         });
