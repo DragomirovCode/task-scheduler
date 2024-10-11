@@ -67,8 +67,26 @@
                     alert('Task added successfully');
                     window.location.href = '/main.html';
                 },
-                error: function () {
-                    alert('Failed to add task');
+                error: function(jqXHR) {
+                    try {
+                        const errors = jqXHR.responseText ? JSON.parse(jqXHR.responseText) : null;
+
+                        if (jqXHR.status === 403) {
+                            window.location.href = '../task-error/add-task/error-403-add-task.html';
+                        } else if (jqXHR.status === 400 && errors) {
+                            $('#taskTitleError').text(errors.title || '');
+                            $('#taskDescriptionError').text(errors.description || '');
+                            $('#taskExpirationError').text(errors.expirationData || '');
+                        } else if (jqXHR.status === 401) {
+                            window.location.href = '../task-error/add-task/error-401-add-task.html';
+                        } else if (jqXHR.status === 404) {
+                            window.location.href = '../task-error/add-task/error-404-add-task.html';
+                        } else {
+                            window.location.href = '../task-error/add-task/error-500-add-task.html';
+                        }
+                    } catch (e) {
+                        window.location.href = '../task-error/add-task/error-500-add-task.html'; // fallback if parsing fails
+                    }
                 }
             });
         } else {
