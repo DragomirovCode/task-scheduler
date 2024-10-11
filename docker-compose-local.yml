@@ -66,7 +66,7 @@ services:
 
   frontend:
     build:
-      context: C:/Java/pet-проекты/task-schedule/task-schedule-front
+      context: ../task-schedule/task-schedule-front
       dockerfile: dockerfile
     container_name: task-schedule-front
     ports:
