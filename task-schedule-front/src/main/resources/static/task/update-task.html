@@ -13,16 +13,19 @@
   <form id="updateTaskForm">
     <div class="mb-3">
       <label for="taskTitle" class="form-label">Task Title</label>
-      <input type="text" class="form-control" id="taskTitle" required>
+      <input type="text" class="form-control" id="taskTitle">
+      <div id="taskTitleError" class="text-danger"></div>
     </div>
     <div class="mb-3">
       <label for="taskDescription" class="form-label">Task Description</label>
-      <textarea class="form-control" id="taskDescription" rows="3" required></textarea>
+      <textarea class="form-control" id="taskDescription" rows="3"></textarea>
+      <div id=taskDescriptionError" class="text-danger"></div>
     </div>
     <div class="mb-3">
       <label for="taskExpiration" class="form-label">Expiration Date & Time</label>
       <input type="datetime-local" class="form-control" id="taskExpiration">
-      <small id="displayExpiration" class="text-muted"></small> <!-- для отображения красивого формата -->
+      <small id="displayExpiration" class="text-muted"></small>
+      <div id=taskExpirationError" class="text-danger"></div>
     </div>
 
 
@@ -95,7 +98,25 @@
         }
       },
       error: function(jqXHR) {
-        alert('Error loading task. Please try again.');
+        try {
+          const errors = jqXHR.responseText ? JSON.parse(jqXHR.responseText) : null;
+
+          if (jqXHR.status === 403) {
+            window.location.href = '/task-error/error-403-update-task.html';
+          } else if (jqXHR.status === 400 && errors) {
+            $('#taskTitleError').text(errors.title || '');
+            $('#taskDescriptionError').text(errors.description || '');
+            $('#taskExpirationError').text(errors.expirationData || '');
+          } else if (jqXHR.status === 401) {
+            window.location.href = '/task-error/error-401-update-task.html';
+          } else if (jqXHR.status === 404) {
+            window.location.href = '/task-error/error-404-update-task.html';
+          } else {
+            window.location.href = '/task-error/error-500-update-task.html';
+          }
+        } catch (e) {
+          window.location.href = '/task-error/error-500-update-task.html'; // fallback if parsing fails
+        }
       }
     });
 
