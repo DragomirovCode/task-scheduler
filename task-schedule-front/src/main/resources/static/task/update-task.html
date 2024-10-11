@@ -102,20 +102,20 @@
           const errors = jqXHR.responseText ? JSON.parse(jqXHR.responseText) : null;
 
           if (jqXHR.status === 403) {
-            window.location.href = '/task-error/error-403-update-task.html';
+            window.location.href = '../task-error/update-task/error-403-update-task.html';
           } else if (jqXHR.status === 400 && errors) {
             $('#taskTitleError').text(errors.title || '');
             $('#taskDescriptionError').text(errors.description || '');
             $('#taskExpirationError').text(errors.expirationData || '');
           } else if (jqXHR.status === 401) {
-            window.location.href = '/task-error/error-401-update-task.html';
+            window.location.href = '../task-error/update-task/error-401-update-task.html';
           } else if (jqXHR.status === 404) {
-            window.location.href = '/task-error/error-404-update-task.html';
+            window.location.href = '../task-error/update-task/error-404-update-task.html';
           } else {
-            window.location.href = '/task-error/error-500-update-task.html';
+            window.location.href = '../task-error/update-task/error-500-update-task.html';
           }
         } catch (e) {
-          window.location.href = '/task-error/error-500-update-task.html'; // fallback if parsing fails
+          window.location.href = '../task-error/update-task/error-500-update-task.html'; // fallback if parsing fails
         }
       }
     });
