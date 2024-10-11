@@ -93,16 +93,15 @@
                     console.log(errors);
 
                     if (jqXHR.status === 404) {
-                        alert("Conflict: User not found.");
+                        window.location.href = '../task-error/auth/error-404-login.html';
                     } else if (jqXHR.status === 400) {
                         $('#emailError').text(errors.email || '');
                         $('#passwordError').text(errors.password || '');
                     } else {
-                        alert('An unexpected error has occurred.');
+                        window.location.href = '../task-error/auth/error-500-login.html';
                     }
                 } catch (e) {
                     console.error('Error processing the response: ', e);
-                    alert('Failed to get a correct response from the server.');
                 }
             }
         });
