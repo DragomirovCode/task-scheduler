@@ -93,12 +93,12 @@
                     console.log(errors);
 
                     if (jqXHR.status === 404) {
-                        window.location.href = '../task-error/auth/error-404-login.html';
+                        window.location.href = '../task-error/auth/login/error-404-login.html';
                     } else if (jqXHR.status === 400) {
                         $('#emailError').text(errors.email || '');
                         $('#passwordError').text(errors.password || '');
                     } else {
-                        window.location.href = '../task-error/auth/error-500-login.html';
+                        window.location.href = '../task-error/auth/login/error-500-login.html';
                     }
                 } catch (e) {
                     console.error('Error processing the response: ', e);
