@@ -14,21 +14,25 @@
         <div class="mb-3">
             <label for="taskTitle" class="form-label">Task Title</label>
             <input type="text" class="form-control" id="taskTitle" readonly>
+            <div id="taskTitleError" class="text-danger"></div>
         </div>
         <div class="mb-3">
             <label for="taskDescription" class="form-label">Task Description</label>
             <textarea class="form-control" id="taskDescription" rows="3" readonly></textarea>
+            <div id="taskDescriptionError" class="text-danger"></div>
         </div>
 
         <div class="mb-3">
             <label for="taskExpiration" class="form-label">Expiration Date & Time</label>
             <input class="form-control" id="taskExpiration" readonly>
-            <small id="displayExpiration" class="text-muted"></small> <!-- отображение красивого формата -->
+            <small id="displayExpiration" class="text-muted"></small>
+            <div id="taskExpirationError" class="text-danger"></div>
         </div>
 
         <div class="mb-3">
             <label for="taskStatus" class="form-label">Task Status</label>
             <input type="text" class="form-control" id="taskStatus" readonly>
+            <div id="taskStatusError" class="text-danger"></div>
         </div>
 
         <button type="button" id="backButton" class="btn btn-secondary mt-2">Back</button>
@@ -76,7 +80,25 @@
                 }
             },
             error: function(jqXHR) {
-                alert('Error loading task. Please try again.');
+                try {
+                    const errors = jqXHR.responseText ? JSON.parse(jqXHR.responseText) : null;
+
+                    if (jqXHR.status === 403) {
+                        window.location.href = '../task-error/details-task/error-403-details-task.html';
+                    } else if (jqXHR.status === 400 && errors) {
+                        $('#taskTitleError').text(errors.title || '');
+                        $('#taskDescriptionError').text(errors.description || '');
+                        $('#taskExpirationError').text(errors.expirationData || '');
+                    } else if (jqXHR.status === 401) {
+                        window.location.href = '../task-error/details-task/error-401-details-task.html';
+                    } else if (jqXHR.status === 404) {
+                        window.location.href = '../task-error/details-task/error-404-details-task.html';
+                    } else {
+                        window.location.href = '../task-error/details-task/error-500-details-task.html';
+                    }
+                } catch (e) {
+                    window.location.href = '../task-error/details-task/error-500-details-task.html'; // fallback if parsing fails
+                }
             }
         });
 
