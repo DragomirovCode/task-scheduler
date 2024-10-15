@@ -11,6 +11,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.dragomirov.taskschedule.commons.DuplicateException;
 import ru.dragomirov.taskschedule.commons.ResourceNotFoundException;
+import ru.dragomirov.taskschedule.commons.kafka.EmailProducer;
+import ru.dragomirov.taskschedule.commons.kafka.MessageDto;
 
 import java.util.Collections;
 import java.util.List;
@@ -20,6 +22,7 @@ import java.util.List;
 public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailProducer emailProducer;
 
     @Transactional(readOnly = true)
     public List<User> getAll() {
@@ -61,6 +64,9 @@ public class UserService {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
             user.setPasswordConfirmation(passwordEncoder.encode(user.getPasswordConfirmation()));
             userRepository.save(user);
+
+            MessageDto message = new MessageDto(user.getEmail(), "Welcome", "Thanks for registering!");
+            emailProducer.sendEmailMessage(message);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateException("A user with the same username or email already exists");
         }
