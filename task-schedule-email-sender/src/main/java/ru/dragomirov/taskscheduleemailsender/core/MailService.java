@@ -1,4 +1,4 @@
-package ru.dragomirov.taskscheduleemailsender.commons;
+package ru.dragomirov.taskscheduleemailsender.core;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
