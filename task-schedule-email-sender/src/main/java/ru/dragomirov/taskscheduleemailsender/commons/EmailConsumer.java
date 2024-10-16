@@ -15,6 +15,6 @@ public class EmailConsumer {
 
     @KafkaListener(topics = "${spring.kafka.topic.email}", groupId = "${spring.kafka.consumer.group-id}")
     public void listenForEmailTasks(MessageDto messageDto) {
-        mailService.sendEmail(messageDto.getTo(), messageDto.getSubject(), messageDto.getBody());
+        mailService.sendEmail(messageDto);
     }
 }
