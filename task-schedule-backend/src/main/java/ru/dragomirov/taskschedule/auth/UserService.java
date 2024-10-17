@@ -9,9 +9,9 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.dragomirov.taskschedule.auth.registration.UserRegistrationMapper;
 import ru.dragomirov.taskschedule.commons.DuplicateException;
 import ru.dragomirov.taskschedule.commons.ResourceNotFoundException;
+import ru.dragomirov.taskschedule.commons.DualServiceUserMapper;
 import ru.dragomirov.taskschedule.commons.kafka.EmailProducer;
 import ru.dragomirov.taskschedulercommondto.kafka.MessageDto;
 import ru.dragomirov.taskschedulercommondto.kafka.UserDto;
@@ -26,7 +26,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailProducer emailProducer;
-    private final UserMapper userMapper;
+    private final DualServiceUserMapper dualServiceUserMapper;
 
     @Transactional(readOnly = true)
     public List<User> getAll() {
@@ -69,7 +69,7 @@ public class UserService {
             user.setPasswordConfirmation(passwordEncoder.encode(user.getPasswordConfirmation()));
             userRepository.save(user);
 
-            UserDto dto = userMapper.toDto(user);
+            UserDto dto = dualServiceUserMapper.toDto(user);
             MessageDto messageDto = new MessageDto(dto, "REGISTRATION", new Properties());
             emailProducer.sendEmailMessage(messageDto);
         } catch (DataIntegrityViolationException e) {
