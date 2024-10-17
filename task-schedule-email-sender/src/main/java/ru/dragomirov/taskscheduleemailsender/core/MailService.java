@@ -8,13 +8,13 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 import freemarker.template.Configuration;
-import ru.dragomirov.taskschedule.commons.kafka.MessageDto;
 
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.mail.javamail.MimeMessageHelper;
+import ru.dragomirov.taskschedulercommondto.kafka.MessageDto;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +39,7 @@ public class MailService {
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
         helper.setFrom(email);
-        helper.setTo(dto.getUserRegistrationDto().getEmail());
+        helper.setTo(dto.userDto.email);
         helper.setSubject("Welcome to our service!");
         String emailContent = getRegistrationEmailContent(dto);
         helper.setText(emailContent, true);
@@ -52,7 +52,7 @@ public class MailService {
     private String getRegistrationEmailContent(MessageDto dto) {
         StringWriter writer = new StringWriter();
         Map<String, Object> model = new HashMap<>();
-        model.put("name", dto.userRegistrationDto.username);
+        model.put("name", dto.userDto.username);
 
         configuration.getTemplate("register.ftlh")
                 .process(model, writer);

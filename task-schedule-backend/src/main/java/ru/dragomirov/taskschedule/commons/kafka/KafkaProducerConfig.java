@@ -9,6 +9,7 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.beans.factory.annotation.Value;
+import ru.dragomirov.taskschedulercommondto.kafka.MessageDto;
 
 import java.util.HashMap;
 import java.util.Map;

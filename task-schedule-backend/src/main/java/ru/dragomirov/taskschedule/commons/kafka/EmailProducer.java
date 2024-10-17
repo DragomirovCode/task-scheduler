@@ -3,6 +3,7 @@ package ru.dragomirov.taskschedule.commons.kafka;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
+import ru.dragomirov.taskschedulercommondto.kafka.*;
 
 @Service
 public class EmailProducer {

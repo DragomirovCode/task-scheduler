@@ -91,10 +91,11 @@
 		</dependency>
 		<dependency>
 			<groupId>ru.dragomirov</groupId>
-			<artifactId>task-schedule-backend</artifactId>
+			<artifactId>task-scheduler-common-dto</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 			<scope>compile</scope>
 		</dependency>
+
 	</dependencies>
 
 	<build>
