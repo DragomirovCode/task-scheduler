@@ -58,4 +58,28 @@ public class UserFetchSchedulerTest {
         Assertions.assertNotEquals("DONE", capturedMessages.get(0).getUserDto().getTaskDtos().get(0).getStatus());
         Assertions.assertNotEquals("DONE", capturedMessages.get(1).getUserDto().getTaskDtos().get(0).getStatus());
     }
+
+    @Test
+    void getPendingTasksForDay_returnsUsersWithCompletedTasks() {
+        List<UserDto> users = Arrays.asList(
+                new UserDto(1L, "user1", "user1@example.com",
+                        Arrays.asList(new TaskDto(1L, "Task1", "TODO", "2024-10-18"))),
+                new UserDto(2L, "user2", "user2@example.com",
+                        Arrays.asList(new TaskDto(2L, "Task2", "IN_PROGRESS", "2024-10-19"))),
+                new UserDto(3L, "user3", "user3@example.com",
+                        Arrays.asList(new TaskDto(3L, "Task3", "DONE", "2024-10-20"),
+                                new TaskDto(3L, "Task4", "TODO", "2024-10-20")))
+        );
+
+        when(userServiceClient.getAllUsers()).thenReturn(users);
+
+        userFetchScheduler.getCompletedTasksForDay();
+
+        ArgumentCaptor<MessageDto> captor = ArgumentCaptor.forClass(MessageDto.class);
+        verify(emailProducer, times(1)).sendEmailMessage(captor.capture());
+
+        List<MessageDto> capturedMessages = captor.getAllValues();
+        assertEquals(1, capturedMessages.size());
+        assertEquals("DONE", capturedMessages.get(0).getUserDto().getTaskDtos().get(0).getStatus());
+    }
 }
