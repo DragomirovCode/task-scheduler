@@ -5,7 +5,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ru.dragomirov.taskscheduler.commons.EmailProducer;
 import ru.dragomirov.taskschedulercommondto.kafka.MessageDto;
-import ru.dragomirov.taskschedulercommondto.kafka.TaskDto;
 import ru.dragomirov.taskschedulercommondto.kafka.UserDto;
 
 import java.util.List;
@@ -23,17 +22,15 @@ public class UserFetchScheduler {
         List<UserDto> users = userServiceClient.getAllUsers();
         String[] targetStatuses = {"TODO", "IN_PROGRESS"};
 
-        users.stream()
+        List<UserDto> usersWithIncompleteTasks = users.stream()
                 .filter(user -> user.getTaskDtos() != null)
-                .forEach(user -> {
-                    List<TaskDto> incompleteTasks = user.getTaskDtos().stream()
-                            .filter(task -> List.of(targetStatuses).contains(task.getStatus()))
-                            .collect(Collectors.toList());
+                .filter(user -> user.getTaskDtos().stream()
+                        .anyMatch(task -> List.of(targetStatuses).contains(task.getStatus())))
+                .collect(Collectors.toList());
 
-                    if (!incompleteTasks.isEmpty()) {
-                        MessageDto message = new MessageDto(user, "OUTSTANDING_TASKS", new Properties());
-                        emailProducer.sendEmailMessage(message);
-                    }
-                });
+        usersWithIncompleteTasks.forEach(user -> {
+            MessageDto message = new MessageDto(user, "OUTSTANDING_TASKS", new Properties());
+            emailProducer.sendEmailMessage(message);
+        });
     }
 }
