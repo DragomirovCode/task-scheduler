@@ -30,11 +30,14 @@ public class UserFetchSchedulerTest {
     UserFetchScheduler userFetchScheduler;
 
     @Test
-    public void testGetPendingTasksForDay() {
+    void testGetPendingTasksForDay() {
         List<UserDto> users = Arrays.asList(
-                new UserDto(1L, "user1", "user1@example.com", Arrays.asList(new TaskDto(1L, "Task1", "TODO", "2024-10-18"))),
-                new UserDto(2L, "user2", "user2@example.com", Arrays.asList(new TaskDto(2L, "Task2", "IN_PROGRESS", "2024-10-19"))),
-                new UserDto(3L, "user3", "user3@example.com", Arrays.asList(new TaskDto(3L, "Task3", "DONE", "2024-10-20")))
+                new UserDto(1L, "user1", "user1@example.com",
+                        Arrays.asList(new TaskDto(1L, "Task1", "TODO", "2024-10-18"))),
+                new UserDto(2L, "user2", "user2@example.com",
+                        Arrays.asList(new TaskDto(2L, "Task2", "IN_PROGRESS", "2024-10-19"))),
+                new UserDto(3L, "user3", "user3@example.com",
+                        Arrays.asList(new TaskDto(3L, "Task3", "DONE", "2024-10-20")))
         );
 
         when(userServiceClient.getAllUsers()).thenReturn(users);
