@@ -6,6 +6,7 @@ import lombok.Data;
 public class TaskDto {
 
     public Long id;
+    public String title;
     public String status;
     public String expirationData;
 
