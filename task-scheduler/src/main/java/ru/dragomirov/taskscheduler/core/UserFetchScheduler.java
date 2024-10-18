@@ -5,6 +5,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ru.dragomirov.taskscheduler.commons.EmailProducer;
 import ru.dragomirov.taskschedulercommondto.kafka.MessageDto;
+import ru.dragomirov.taskschedulercommondto.kafka.TaskDto;
 import ru.dragomirov.taskschedulercommondto.kafka.UserDto;
 
 import java.util.List;
@@ -22,7 +23,7 @@ public class UserFetchScheduler {
         List<UserDto> users = userServiceClient.getAllUsers();
         String[] targetStatuses = {"TODO", "IN_PROGRESS"};
 
-        List<UserDto> usersWithIncompleteTasks = sortUsersByStatus(users, targetStatuses);
+        List<UserDto> usersWithIncompleteTasks = filterUsersAndTasksByStatus(users, targetStatuses);
 
         usersWithIncompleteTasks.forEach(user -> {
             MessageDto message = new MessageDto(user, "OUTSTANDING_TASKS", new Properties());
@@ -35,7 +36,7 @@ public class UserFetchScheduler {
         List<UserDto> users = userServiceClient.getAllUsers();
         String[] targetStatuses = {"DONE"};
 
-        List<UserDto> usersWithTasks = sortUsersByStatus(users, targetStatuses);
+        List<UserDto> usersWithTasks = filterUsersAndTasksByStatus(users, targetStatuses);
 
         usersWithTasks.forEach(user -> {
             MessageDto message = new MessageDto(user, "COMPLETED_TASKS", new Properties());
@@ -48,7 +49,7 @@ public class UserFetchScheduler {
         List<UserDto> users = userServiceClient.getAllUsers();
         String[] targetStatuses = {"TODO", "IN_PROGRESS", "DONE"};
 
-        List<UserDto> usersWithTasks = sortUsersByStatus(users, targetStatuses);
+        List<UserDto> usersWithTasks = filterUsersAndTasksByStatus(users, targetStatuses);
 
         usersWithTasks.forEach(user -> {
             MessageDto message = new MessageDto(user, "ALL_TASKS", new Properties());
@@ -56,11 +57,17 @@ public class UserFetchScheduler {
         });
     }
 
-    private List<UserDto> sortUsersByStatus(List<UserDto> users, String[] targetStatuses) {
+
+    private List<UserDto> filterUsersAndTasksByStatus(List<UserDto> users, String[] targetStatuses) {
         return users.stream()
-                .filter(user -> user.getTaskDtos() != null)
-                .filter(user -> user.getTaskDtos().stream()
-                        .anyMatch(task -> List.of(targetStatuses).contains(task.getStatus())))
+                .map(user -> {
+                    List<TaskDto> filteredTasks = user.getTaskDtos().stream()
+                            .filter(task -> List.of(targetStatuses).contains(task.getStatus()))
+                            .collect(Collectors.toList());
+                    user.setTaskDtos(filteredTasks);
+                    return user;
+                })
+                .filter(user -> !user.getTaskDtos().isEmpty())
                 .collect(Collectors.toList());
     }
 }
