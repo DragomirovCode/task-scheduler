@@ -18,7 +18,7 @@ public class UserFetchScheduler {
     private final UserServiceClient userServiceClient;
     private final EmailProducer emailProducer;
 
-    @Scheduled(fixedRate = 30000)
+    @Scheduled(cron = "0 0 0 * * ?")
     public void getPendingTasksForDay() {
         List<UserDto> users = userServiceClient.getAllUsers();
         String[] targetStatuses = {"TODO", "IN_PROGRESS"};
@@ -31,7 +31,7 @@ public class UserFetchScheduler {
         });
     }
 
-    @Scheduled(fixedRate = 30000)
+    @Scheduled(cron = "0 0 0 * * ?")
     public void getCompletedTasksForDay() {
         List<UserDto> users = userServiceClient.getAllUsers();
         String[] targetStatuses = {"DONE"};
@@ -44,7 +44,7 @@ public class UserFetchScheduler {
         });
     }
 
-    @Scheduled(fixedRate = 30000)
+    @Scheduled(cron = "0 0 0 * * ?")
     public void getAllTaskForDay() {
         List<UserDto> users = userServiceClient.getAllUsers();
         String[] targetStatuses = {"TODO", "IN_PROGRESS", "DONE"};
