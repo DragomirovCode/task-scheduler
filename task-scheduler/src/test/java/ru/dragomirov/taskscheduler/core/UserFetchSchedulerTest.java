@@ -31,7 +31,7 @@ public class UserFetchSchedulerTest {
     UserFetchScheduler userFetchScheduler;
 
     @Test
-    void testGetPendingTasksForDay() {
+    void getPendingTasksForDay_returnsUsersWithOutstandingTasks() {
         List<UserDto> users = Arrays.asList(
                 new UserDto(1L, "user1", "user1@example.com",
                         Arrays.asList(new TaskDto(1L, "Task1", "TODO", "2024-10-18"))),
