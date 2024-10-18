@@ -1,5 +1,6 @@
 package ru.dragomirov.taskscheduler.core;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
@@ -13,6 +14,7 @@ import ru.dragomirov.taskschedulercommondto.kafka.UserDto;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -48,7 +50,10 @@ public class UserFetchSchedulerTest {
         verify(emailProducer, times(2)).sendEmailMessage(captor.capture());
 
         List<MessageDto> capturedMessages = captor.getAllValues();
-        assertEquals("user1", capturedMessages.get(0).getUserDto().getUsername());
-        assertEquals("user2", capturedMessages.get(1).getUserDto().getUsername());
+        assertEquals(2, capturedMessages.size());
+        assertEquals("TODO", capturedMessages.get(0).getUserDto().getTaskDtos().get(0).getStatus());
+        assertEquals("IN_PROGRESS", capturedMessages.get(1).getUserDto().getTaskDtos().get(0).getStatus());
+        Assertions.assertNotEquals("DONE", capturedMessages.get(0).getUserDto().getTaskDtos().get(0).getStatus());
+        Assertions.assertNotEquals("DONE", capturedMessages.get(1).getUserDto().getTaskDtos().get(0).getStatus());
     }
 }
