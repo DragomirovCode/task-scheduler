@@ -2,47 +2,30 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Notification of all tasks, ${name}</title>
-    <style>
-        #body {
-            display: flex;
-            flex-direction: column;
-            font-family: "Segoe UI", serif;
-            align-items: center;
-            background-color: #607FF2;
-            font-size: 20px;
-            height: 100%;
-        }
-
-        #div {
-            display: block;
-            flex-direction: column;
-            margin: 10%;
-            font-family: "Segoe UI", serif;
-            background-color: white;
-            padding: 3%;
-            border-radius: 20px;
-            color: black;
-        }
-
-        #a {
-            text-decoration: none;
-        }
-    </style>
+    <title>Task Statistics for ${name}</title>
 </head>
 <body>
-<div id="body">
-    <div id="div">
-        <h1 style="text-align: center">Notification of all tasks</h1>
-        <p>Hello, ${name}!</p>
-        <p>Do you have ${totalTasks} tasks.</p>
-        <p>Here are ${tasks?size < 5 ? tasks?size : 5} of them:</p>
-        <#list tasks as task>
-            <p>${task.title}</p>
-        </#list>
-        <p>With best wishes, <br> Mikhail Dragomirov</p>
-        <a id="a" href="https://github.com/DragomirovCode/task-scheduler">Github</a>
-    </div>
-</div>
+<h1>Hello, ${name}!</h1>
+<h2>Here are your task statistics for today:</h2>
+
+<h3>Incomplete Tasks:</h3>
+<#if incompleteTasks?size == 0>
+    <p>You have no incomplete tasks!</p>
+<#else>
+    <#list incompleteTasks as task>
+        <p>${task.title}</p>
+    </#list>
+</#if>
+
+<h3>Completed Tasks:</h3>
+<#if completeTasks?size == 0>
+    <p>You have no completed tasks yet.</p>
+<#else>
+    <#list completeTasks as task>
+        <p>${task.title}</p>
+    </#list>
+</#if>
+
+<p>Keep up the great work!</p>
 </body>
 </html>
