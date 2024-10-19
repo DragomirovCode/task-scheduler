@@ -32,19 +32,26 @@ public class UserFetchScheduler {
     }
 
     @Scheduled(cron = "0 0 0 * * ?")
-    public void getTaskStatisticsForDay() {
+    public void getAllTaskForDay() {
         List<UserDto> users = userServiceClient.getAllUsers();
         String[] incompleteStatuses = {"TODO", "IN_PROGRESS"};
         String[] completeStatuses = {"DONE"};
 
-        List<UserDto> usersWithIncompleteTasks = filterUsersAndTasksByStatus(users, incompleteStatuses);
-        List<UserDto> usersWithCompleteTasks = filterUsersAndTasksByStatus(users, completeStatuses);
-
         users.forEach(user -> {
-            MessageDto message = new MessageDto(user, "ALL_TASK_STATISTICS", new Properties());
-            message.body.put("incompleteTasks", usersWithIncompleteTasks);
-            message.body.put("completeTasks", usersWithCompleteTasks);
-            emailProducer.sendEmailMessage(message);
+            List<TaskDto> incompleteTasks = user.getTaskDtos().stream()
+                    .filter(task -> List.of(incompleteStatuses).contains(task.getStatus()))
+                    .collect(Collectors.toList());
+
+            List<TaskDto> completeTasks = user.getTaskDtos().stream()
+                    .filter(task -> List.of(completeStatuses).contains(task.getStatus()))
+                    .collect(Collectors.toList());
+
+            if (!incompleteTasks.isEmpty() && !completeTasks.isEmpty()) {
+                MessageDto message = new MessageDto(user, "ALL_TASK_STATISTICS", new Properties());
+                message.body.put("incompleteTasks", incompleteTasks);
+                message.body.put("completeTasks", completeTasks);
+                emailProducer.sendEmailMessage(message);
+            }
         });
     }
 
