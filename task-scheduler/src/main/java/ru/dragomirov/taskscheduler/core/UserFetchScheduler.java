@@ -8,9 +8,10 @@ import ru.dragomirov.taskschedulercommondto.kafka.MessageDto;
 import ru.dragomirov.taskschedulercommondto.kafka.TaskDto;
 import ru.dragomirov.taskschedulercommondto.kafka.UserDto;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Properties;
 import java.util.stream.Collectors;
 
 @Component
@@ -23,12 +24,13 @@ public class UserFetchScheduler {
     public void getPendingTasksForDay() {
         List<UserDto> users = userServiceClient.getAllUsers();
         String[] targetStatuses = {"TODO", "IN_PROGRESS"};
-        LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
+        LocalDate yesterday = LocalDate.now().minusDays(1);
 
-        List<UserDto> usersWithIncompleteTasks = filterUsersAndTasksByStatusAndDate(users, targetStatuses, yesterday);
+        List<UserDto> usersWithIncompleteTasks = filterUsersAndTasksByStatusAndDate(users, targetStatuses,
+                yesterday.atStartOfDay());
 
         usersWithIncompleteTasks.forEach(user -> {
-            MessageDto message = new MessageDto(user, "OUTSTANDING_TASKS", new Properties());
+            MessageDto message = new MessageDto(user, "OUTSTANDING_TASKS", new HashMap<>());
             emailProducer.sendEmailMessage(message);
         });
     }
@@ -38,19 +40,19 @@ public class UserFetchScheduler {
         List<UserDto> users = userServiceClient.getAllUsers();
         String[] incompleteStatuses = {"TODO", "IN_PROGRESS"};
         String[] completeStatuses = {"DONE"};
-        LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
+        LocalDate yesterday = LocalDate.now().minusDays(1);
 
         users.forEach(user -> {
             List<TaskDto> incompleteTasks = user.getTaskDtos().stream()
-                    .filter(task -> List.of(incompleteStatuses).contains(task.getStatus()) && task.getCreatedDate().toLocalDate().isEqual(yesterday.toLocalDate()))
+                    .filter(task -> List.of(incompleteStatuses).contains(task.getStatus()) && task.getCreatedDate().toLocalDate().isEqual(yesterday))
                     .collect(Collectors.toList());
 
             List<TaskDto> completeTasks = user.getTaskDtos().stream()
-                    .filter(task -> List.of(completeStatuses).contains(task.getStatus()) && task.getCreatedDate().toLocalDate().isEqual(yesterday.toLocalDate()))
+                    .filter(task -> List.of(completeStatuses).contains(task.getStatus()) && task.getCreatedDate().toLocalDate().isEqual(yesterday))
                     .collect(Collectors.toList());
 
             if (!incompleteTasks.isEmpty() && !completeTasks.isEmpty()) {
-                MessageDto message = new MessageDto(user, "ALL_TASK_STATISTICS", new Properties());
+                MessageDto message = new MessageDto(user, "ALL_TASK_STATISTICS", new HashMap<>());
                 message.body.put("incompleteTasks", incompleteTasks);
                 message.body.put("completeTasks", completeTasks);
                 emailProducer.sendEmailMessage(message);
@@ -62,12 +64,13 @@ public class UserFetchScheduler {
     public void getCompletedTasksForDay() {
         List<UserDto> users = userServiceClient.getAllUsers();
         String[] targetStatuses = {"DONE"};
-        LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
+        LocalDate yesterday = LocalDate.now().minusDays(1);
 
-        List<UserDto> usersWithTasks = filterUsersAndTasksByStatusAndDate(users, targetStatuses, yesterday);
+        List<UserDto> usersWithTasks = filterUsersAndTasksByStatusAndDate(users, targetStatuses,
+                yesterday.atStartOfDay());
 
         usersWithTasks.forEach(user -> {
-            MessageDto message = new MessageDto(user, "COMPLETED_TASKS", new Properties());
+            MessageDto message = new MessageDto(user, "COMPLETED_TASKS", new HashMap<>());
             emailProducer.sendEmailMessage(message);
         });
     }
