@@ -89,6 +89,27 @@ services:
     networks:
       - webapp
 
+  task-scheduler:
+    build:
+      context: ../task-schedule/task-scheduler
+      dockerfile: dockerFile
+    container_name: task-scheduler
+    ports:
+      - "8083:8083"
+    networks:
+      - webapp
+
+  task-common:
+    build:
+      context: ../task-schedule/task-scheduler-common-dto
+      dockerfile: dockerFile
+    container_name: task-common
+    ports:
+      - "8084:8084"
+    networks:
+      - webapp
+
+
 volumes:
   mysql_data:
     driver: local
