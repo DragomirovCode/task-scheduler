@@ -7,7 +7,7 @@ RUN mvn clean package -DskipTests
 # Stage 2: Легковесный образ с JRE
 FROM openjdk:17-jre-slim
 WORKDIR /app
-COPY --from=build /app/target/ROOT.jar /app/ROOT.jar
+COPY --from=build /app/target/task-scheduler-common-dto.jar /app/task-scheduler-common-dto.jar
 
 EXPOSE 8085
 

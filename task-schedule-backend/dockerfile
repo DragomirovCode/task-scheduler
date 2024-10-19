@@ -7,8 +7,8 @@ RUN mvn clean package -DskipTests
 # Stage 2: Легковесный образ с JRE
 FROM openjdk:17-jre-slim
 WORKDIR /app
-COPY --from=build /app/target/ROOT.jar /app/ROOT.jar
+COPY --from=build /app/target/task-tracker-backend.jar /app/task-tracker-backend.jar
 
 EXPOSE 8080
 
-ENTRYPOINT ["java", "-jar", "/app/ROOT.jar", "--spring.profiles.active=docker"]
+ENTRYPOINT ["java", "-jar", "/app/task-tracker-backend.jar", "--spring.profiles.active=docker"]

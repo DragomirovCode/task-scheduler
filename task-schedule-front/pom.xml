@@ -59,7 +59,7 @@
     </dependencies>
 
     <build>
-        <finalName>ROOT</finalName>
+        <finalName>task-schedule-front</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
