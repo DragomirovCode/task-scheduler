@@ -32,7 +32,7 @@ public class MailService {
             case "REGISTRATION" -> sendRegistrationEmail(dto);
             case "OUTSTANDING_TASKS" -> sendPendingTasksReminder(dto);
             case "COMPLETED_TASKS" -> sendCompletedTasksReminder(dto);
-            case "ALL_TASKS" -> sendAllTasksReminder(dto);
+            case "ALL_TASK_STATISTICS" -> sendAllTasksReminder(dto);
         }
     }
 
@@ -86,9 +86,15 @@ public class MailService {
         MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
 
         helper.setFrom(email);
-        helper.setTo(dto.userDto.email);
-        helper.setSubject("Notification!");
-        String emailContent = getAllTasksEmailContent(dto);
+        helper.setTo(dto.getUserDto().getEmail());
+        helper.setSubject("Your Daily Task Statistics");
+
+        Map<String, Object> model = new HashMap<>();
+        model.put("name", dto.getUserDto().getUsername());
+        model.put("incompleteTasks", dto.body.get("incompleteTasks"));
+        model.put("completeTasks", dto.body.get("completeTasks"));
+
+        String emailContent = getTaskStatisticsEmailContent(model);
         helper.setText(emailContent, true);
 
         mailSender.send(mimeMessage);
@@ -135,16 +141,9 @@ public class MailService {
     }
 
     @SneakyThrows
-    private String getAllTasksEmailContent(MessageDto dto) {
+    private String getTaskStatisticsEmailContent(Map<String, Object> model) {
         StringWriter writer = new StringWriter();
-        Map<String, Object> model = new HashMap<>();
-        model.put("name", dto.userDto.username);
-        model.put("totalTasks", dto.userDto.taskDtos.size());
-        model.put("tasks", dto.userDto.taskDtos.stream().limit(5).collect(Collectors.toList()));
-
-        configuration.getTemplate("all-tasks.ftlh")
-                .process(model, writer);
-
+        configuration.getTemplate("all-tasks.ftlh").process(model, writer);
         return writer.getBuffer().toString();
     }
 }
