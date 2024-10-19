@@ -36,7 +36,7 @@
         <h1 style="text-align: center">Notification of unfulfilled tasks</h1>
         <p>Hello, ${name}!</p>
         <p>Do you have ${totalTasks} unfulfilled tasks.</p>
-        <p>Here are 5 of them:</p>
+        <p>Here are ${tasks?size < 5 ? tasks?size : 5} of them:</p>
         <#list tasks as task>
             <p>${task.title}</p>
         </#list>
