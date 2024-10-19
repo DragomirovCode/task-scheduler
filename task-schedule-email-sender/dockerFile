@@ -1,9 +1,14 @@
-FROM openjdk:17-alpine
-
+# Stage 1: Сборка jar-файла с использованием Maven и JDK
+FROM maven:3.8.5-openjdk-17 AS build
 WORKDIR /app
+COPY . .
+RUN mvn clean package -DskipTests
+
+# Stage 2: Легковесный образ с JRE
+FROM openjdk:17-jre-slim
+WORKDIR /app
+COPY --from=build /app/target/ROOT.jar /app/ROOT.jar
 
 EXPOSE 8082
-
-COPY target/ROOT.jar /app/ROOT.jar
 
 ENTRYPOINT ["java", "-jar", "/app/ROOT.jar", "--spring.profiles.active=docker"]
