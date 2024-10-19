@@ -12,6 +12,7 @@ import freemarker.template.Configuration;
 import java.io.StringWriter;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.mail.javamail.MimeMessageHelper;
 import ru.dragomirov.taskschedulercommondto.kafka.MessageDto;
@@ -29,6 +30,7 @@ public class MailService {
     public void sendEmail(MessageDto dto) {
         switch (dto.type) {
             case "REGISTRATION" -> sendRegistrationEmail(dto);
+            case "OUTSTANDING_TASKS" -> sendPendingTasksReminder(dto);
         }
     }
 
@@ -49,12 +51,40 @@ public class MailService {
     }
 
     @SneakyThrows
+    private void sendPendingTasksReminder(MessageDto dto) {
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+        helper.setFrom(email);
+        helper.setTo(dto.userDto.email);
+        helper.setSubject("Notification!");
+        String emailContent = getPendingTasksEmailContent(dto);
+        helper.setText(emailContent, true);
+
+        mailSender.send(mimeMessage);
+    }
+
+    @SneakyThrows
     private String getRegistrationEmailContent(MessageDto dto) {
         StringWriter writer = new StringWriter();
         Map<String, Object> model = new HashMap<>();
         model.put("name", dto.userDto.username);
 
         configuration.getTemplate("register.ftlh")
+                .process(model, writer);
+
+        return writer.getBuffer().toString();
+    }
+
+    @SneakyThrows
+    private String getPendingTasksEmailContent(MessageDto dto) {
+        StringWriter writer = new StringWriter();
+        Map<String, Object> model = new HashMap<>();
+        model.put("name", dto.userDto.username);
+        model.put("totalTasks", dto.userDto.taskDtos.size());
+        model.put("tasks", dto.userDto.taskDtos.stream().limit(5).collect(Collectors.toList()));
+
+        configuration.getTemplate("pending-tasks.ftlh")
                 .process(model, writer);
 
         return writer.getBuffer().toString();
