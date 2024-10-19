@@ -32,6 +32,23 @@ public class UserFetchScheduler {
     }
 
     @Scheduled(cron = "0 0 0 * * ?")
+    public void getTaskStatisticsForDay() {
+        List<UserDto> users = userServiceClient.getAllUsers();
+        String[] incompleteStatuses = {"TODO", "IN_PROGRESS"};
+        String[] completeStatuses = {"DONE"};
+
+        List<UserDto> usersWithIncompleteTasks = filterUsersAndTasksByStatus(users, incompleteStatuses);
+        List<UserDto> usersWithCompleteTasks = filterUsersAndTasksByStatus(users, completeStatuses);
+
+        users.forEach(user -> {
+            MessageDto message = new MessageDto(user, "ALL_TASK_STATISTICS", new Properties());
+            message.body.put("incompleteTasks", usersWithIncompleteTasks);
+            message.body.put("completeTasks", usersWithCompleteTasks);
+            emailProducer.sendEmailMessage(message);
+        });
+    }
+
+    @Scheduled(cron = "0 0 0 * * ?")
     public void getCompletedTasksForDay() {
         List<UserDto> users = userServiceClient.getAllUsers();
         String[] targetStatuses = {"DONE"};
@@ -43,20 +60,6 @@ public class UserFetchScheduler {
             emailProducer.sendEmailMessage(message);
         });
     }
-
-    @Scheduled(cron = "0 0 0 * * ?")
-    public void getAllTaskForDay() {
-        List<UserDto> users = userServiceClient.getAllUsers();
-        String[] targetStatuses = {"TODO", "IN_PROGRESS", "DONE"};
-
-        List<UserDto> usersWithTasks = filterUsersAndTasksByStatus(users, targetStatuses);
-
-        usersWithTasks.forEach(user -> {
-            MessageDto message = new MessageDto(user, "ALL_TASKS", new Properties());
-            emailProducer.sendEmailMessage(message);
-        });
-    }
-
 
     private List<UserDto> filterUsersAndTasksByStatus(List<UserDto> users, String[] targetStatuses) {
         return users.stream()
