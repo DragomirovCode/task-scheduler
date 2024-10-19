@@ -4,7 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Properties;
+import java.util.HashMap;
+import java.util.Map;
 
 @Data
 @AllArgsConstructor
@@ -13,6 +14,6 @@ public class MessageDto {
 
     public UserDto userDto;
     public String type;
-    public Properties body;
+    public Map<String, Object> body = new HashMap<>();
 
 }
