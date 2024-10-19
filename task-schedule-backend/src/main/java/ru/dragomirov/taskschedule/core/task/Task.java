@@ -42,4 +42,11 @@ public class Task implements Serializable {
     @Column(name = "expirationData")
     private LocalDateTime expirationData;
 
+    @Column(name = "createdDate", nullable = false)
+    private LocalDateTime createdDate;
+
+    @PrePersist
+    protected void onCreate() {
+        createdDate = LocalDateTime.now();
+    }
 }
