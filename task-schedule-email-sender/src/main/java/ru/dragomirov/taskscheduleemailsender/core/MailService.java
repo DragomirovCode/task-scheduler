@@ -128,7 +128,7 @@ public class MailService {
         model.put("totalTasks", dto.userDto.taskDtos.size());
         model.put("tasks", dto.userDto.taskDtos.stream().limit(5).collect(Collectors.toList()));
 
-        configuration.getTemplate("pending-tasks.ftlh")
+        configuration.getTemplate("completed-tasks.ftlh")
                 .process(model, writer);
 
         return writer.getBuffer().toString();
