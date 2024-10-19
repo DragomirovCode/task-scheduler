@@ -31,6 +31,7 @@ public class MailService {
         switch (dto.type) {
             case "REGISTRATION" -> sendRegistrationEmail(dto);
             case "OUTSTANDING_TASKS" -> sendPendingTasksReminder(dto);
+            case "COMPLETED_TASKS" -> sendCompletedTasksReminder(dto);
         }
     }
 
@@ -65,6 +66,20 @@ public class MailService {
     }
 
     @SneakyThrows
+    private void sendCompletedTasksReminder (MessageDto dto) {
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+
+        helper.setFrom(email);
+        helper.setTo(dto.userDto.email);
+        helper.setSubject("Notification!");
+        String emailContent = getCompletedTasksEmailContent(dto);
+        helper.setText(emailContent, true);
+
+        mailSender.send(mimeMessage);
+    }
+
+    @SneakyThrows
     private String getRegistrationEmailContent(MessageDto dto) {
         StringWriter writer = new StringWriter();
         Map<String, Object> model = new HashMap<>();
@@ -78,6 +93,20 @@ public class MailService {
 
     @SneakyThrows
     private String getPendingTasksEmailContent(MessageDto dto) {
+        StringWriter writer = new StringWriter();
+        Map<String, Object> model = new HashMap<>();
+        model.put("name", dto.userDto.username);
+        model.put("totalTasks", dto.userDto.taskDtos.size());
+        model.put("tasks", dto.userDto.taskDtos.stream().limit(5).collect(Collectors.toList()));
+
+        configuration.getTemplate("pending-tasks.ftlh")
+                .process(model, writer);
+
+        return writer.getBuffer().toString();
+    }
+
+    @SneakyThrows
+    private String getCompletedTasksEmailContent(MessageDto dto) {
         StringWriter writer = new StringWriter();
         Map<String, Object> model = new HashMap<>();
         model.put("name", dto.userDto.username);
