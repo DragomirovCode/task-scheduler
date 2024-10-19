@@ -17,6 +17,7 @@ import ru.dragomirov.taskschedulercommondto.kafka.MessageDto;
 import ru.dragomirov.taskschedulercommondto.kafka.UserDto;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Properties;
 
@@ -70,7 +71,7 @@ public class UserService {
             userRepository.save(user);
 
             UserDto dto = dualServiceUserMapper.toDto(user);
-            MessageDto messageDto = new MessageDto(dto, "REGISTRATION", new Properties());
+            MessageDto messageDto = new MessageDto(dto, "REGISTRATION", new HashMap<>());
             emailProducer.sendEmailMessage(messageDto);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateException("A user with the same username or email already exists");
