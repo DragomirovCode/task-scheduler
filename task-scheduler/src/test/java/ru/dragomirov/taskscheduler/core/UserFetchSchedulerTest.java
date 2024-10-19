@@ -92,7 +92,7 @@ public class UserFetchSchedulerTest {
                         Arrays.asList(new TaskDto(2L, "Task2", "IN_PROGRESS", "2024-10-19"))),
                 new UserDto(3L, "user3", "user3@example.com",
                         Arrays.asList(new TaskDto(3L, "Task3", "DONE", "2024-10-20"),
-                                new TaskDto(3L, "Task4", "TODO", "2024-10-20")))
+                                new TaskDto(4L, "Task4", "TODO", "2024-10-20")))
         );
 
         when(userServiceClient.getAllUsers()).thenReturn(users);
@@ -100,9 +100,11 @@ public class UserFetchSchedulerTest {
         userFetchScheduler.getAllTaskForDay();
 
         ArgumentCaptor<MessageDto> captor = ArgumentCaptor.forClass(MessageDto.class);
-        verify(emailProducer, times(3)).sendEmailMessage(captor.capture());
+        verify(emailProducer, times(1)).sendEmailMessage(captor.capture());
 
         List<MessageDto> capturedMessages = captor.getAllValues();
-        assertEquals(3, capturedMessages.size());
+
+        assertEquals(1, capturedMessages.size());
+        assertEquals("user3", capturedMessages.get(0).userDto.username);
     }
 }
