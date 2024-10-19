@@ -11,7 +11,7 @@ import ru.dragomirov.taskschedulercommondto.kafka.MessageDto;
 import ru.dragomirov.taskschedulercommondto.kafka.TaskDto;
 import ru.dragomirov.taskschedulercommondto.kafka.UserDto;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 
@@ -33,18 +33,18 @@ public class UserFetchSchedulerTest {
 
     @Test
     void getPendingTasksForDay_returnsUsersWithOutstandingTasks() {
-        LocalDateTime today = LocalDateTime.now();
-        LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
-        LocalDateTime weekAgo = LocalDateTime.now().minusDays(7);
+        LocalDate today = LocalDate.now();
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        LocalDate weekAgo = LocalDate.now().minusDays(7);
 
         List<UserDto> users = Arrays.asList(
                 new UserDto(1L, "user1", "user1@example.com",
-                        Arrays.asList(new TaskDto(1L, "Task1", "TODO", "2024-10-18", today))),
+                        Arrays.asList(new TaskDto(1L, "Task1", "TODO", "2024-10-18", today.atStartOfDay()))),
                 new UserDto(2L, "user2", "user2@example.com",
-                        Arrays.asList(new TaskDto(2L, "Task2", "IN_PROGRESS", "2024-10-19", yesterday))),
+                        Arrays.asList(new TaskDto(2L, "Task2", "IN_PROGRESS", "2024-10-19", yesterday.atStartOfDay()))),
                 new UserDto(3L, "user3", "user3@example.com",
-                        Arrays.asList(new TaskDto(3L, "Task3", "DONE", "2024-10-20", yesterday),
-                                new TaskDto(4L, "Task4", "TODO", "2024-10-20", weekAgo)))
+                        Arrays.asList(new TaskDto(3L, "Task3", "DONE", "2024-10-20", yesterday.atStartOfDay()),
+                                new TaskDto(4L, "Task4", "TODO", "2024-10-20", weekAgo.atStartOfDay())))
         );
 
         when(userServiceClient.getAllUsers()).thenReturn(users);
@@ -63,18 +63,18 @@ public class UserFetchSchedulerTest {
 
     @Test
     void getCompletedTasksForDay_returnsUsersWithCompletedTasks() {
-        LocalDateTime today = LocalDateTime.now();
-        LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
-        LocalDateTime weekAgo = LocalDateTime.now().minusDays(7);
+        LocalDate today = LocalDate.now();
+        LocalDate yesterday = LocalDate.now().minusDays(1);
+        LocalDate weekAgo = LocalDate.now().minusDays(7);
 
         List<UserDto> users = Arrays.asList(
                 new UserDto(1L, "user1", "user1@example.com",
-                        Arrays.asList(new TaskDto(1L, "Task1", "DONE", "2024-10-18", today))),
+                        Arrays.asList(new TaskDto(1L, "Task1", "DONE", "2024-10-18", today.atStartOfDay()))),
                 new UserDto(2L, "user2", "user2@example.com",
-                        Arrays.asList(new TaskDto(2L, "Task2", "DONE", "2024-10-19", yesterday))),
+                        Arrays.asList(new TaskDto(2L, "Task2", "DONE", "2024-10-19", yesterday.atStartOfDay()))),
                 new UserDto(3L, "user3", "user3@example.com",
-                        Arrays.asList(new TaskDto(3L, "Task3", "DONE", "2024-10-20", weekAgo),
-                                new TaskDto(4L, "Task4", "DONE", "2024-10-20", yesterday)))
+                        Arrays.asList(new TaskDto(3L, "Task3", "DONE", "2024-10-20", weekAgo.atStartOfDay()),
+                                new TaskDto(4L, "Task4", "DONE", "2024-10-20", yesterday.atStartOfDay())))
         );
 
         when(userServiceClient.getAllUsers()).thenReturn(users);
@@ -92,18 +92,17 @@ public class UserFetchSchedulerTest {
 
     @Test
     void getAllTaskForDay_returnsUsersWithAllTasks() {
-        LocalDateTime today = LocalDateTime.now();
-        LocalDateTime yesterday = LocalDateTime.now().minusDays(1);
-        LocalDateTime weekAgo = LocalDateTime.now().minusDays(7);
+        LocalDate today = LocalDate.now();
+        LocalDate yesterday = LocalDate.now().minusDays(1);
 
         List<UserDto> users = Arrays.asList(
                 new UserDto(1L, "user1", "user1@example.com",
-                        Arrays.asList(new TaskDto(1L, "Task1", "TODO", "2024-10-18", today))),
+                        Arrays.asList(new TaskDto(1L, "Task1", "TODO", "2024-10-18", today.atStartOfDay()))),
                 new UserDto(2L, "user2", "user2@example.com",
-                        Arrays.asList(new TaskDto(2L, "Task2", "IN_PROGRESS", "2024-10-19", yesterday))),
+                        Arrays.asList(new TaskDto(2L, "Task2", "IN_PROGRESS", "2024-10-19", yesterday.atStartOfDay()))),
                 new UserDto(3L, "user3", "user3@example.com",
-                        Arrays.asList(new TaskDto(3L, "Task3", "DONE", "2024-10-20", yesterday),
-                                new TaskDto(4L, "Task4", "TODO", "2024-10-20", yesterday)))
+                        Arrays.asList(new TaskDto(3L, "Task3", "DONE", "2024-10-20", yesterday.atStartOfDay()),
+                                new TaskDto(4L, "Task4", "TODO", "2024-10-20", yesterday.atStartOfDay())))
         );
 
         when(userServiceClient.getAllUsers()).thenReturn(users);
