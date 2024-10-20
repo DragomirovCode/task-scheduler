@@ -32,7 +32,7 @@ jobs:
 
       # Сборка Docker образа, находясь в директории сервиса
       - name: Build Docker image
-        working-directory: ./task-schedule-backend  # указываем директорию с Dockerfile
+        working-directory: ./task-schedule-email-sender  # указываем директорию с Dockerfile
         run: docker build -t dragomirovcode/task-schedule-email-sender:latest .
 
       - name: Push Docker image
