@@ -1,4 +1,4 @@
-package ru.dragomirov.taskscheduler.commons;
+package ru.dragomirov.taskscheduler.commons.message;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

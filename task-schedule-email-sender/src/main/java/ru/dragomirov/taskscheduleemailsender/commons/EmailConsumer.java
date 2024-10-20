@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Service;
+import ru.dragomirov.taskscheduleemailsender.commons.message.MessageDto;
 import ru.dragomirov.taskscheduleemailsender.core.MailService;
 
 @Service

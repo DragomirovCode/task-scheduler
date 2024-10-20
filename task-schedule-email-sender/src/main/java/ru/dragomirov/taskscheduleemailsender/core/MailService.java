@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.mail.javamail.MimeMessageHelper;
-import ru.dragomirov.taskscheduleemailsender.commons.MessageDto;
+import ru.dragomirov.taskscheduleemailsender.commons.message.MessageDto;
 
 
 @Service

@@ -1,8 +1,9 @@
-package ru.dragomirov.taskscheduleemailsender.commons;
+package ru.dragomirov.taskscheduler.commons.message;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.dragomirov.taskscheduler.commons.message.TaskDto;
 
 import java.util.List;
 

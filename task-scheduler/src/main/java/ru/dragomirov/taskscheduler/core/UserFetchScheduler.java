@@ -4,9 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ru.dragomirov.taskscheduler.commons.EmailProducer;
-import ru.dragomirov.taskscheduler.commons.MessageDto;
-import ru.dragomirov.taskscheduler.commons.TaskDto;
-import ru.dragomirov.taskscheduler.commons.UserDto;
+import ru.dragomirov.taskscheduler.commons.message.MessageDto;
+import ru.dragomirov.taskscheduler.commons.message.TaskDto;
+import ru.dragomirov.taskscheduler.commons.message.UserDto;
 
 
 import java.time.LocalDate;

@@ -6,7 +6,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import ru.dragomirov.taskscheduler.commons.UserDto;
+import ru.dragomirov.taskscheduler.commons.message.UserDto;
 
 import java.util.List;
 
