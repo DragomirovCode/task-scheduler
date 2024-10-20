@@ -1,4 +1,4 @@
-name: Build and Push Docker Image for Backend
+name: Build and Push Docker Images for All Services
 
 on:
   push:
@@ -19,21 +19,40 @@ jobs:
           java-version: '17'
           distribution: 'adopt'
 
-      # Переходим в директорию сервиса, где находится Dockerfile
-      - name: Navigate to backend folder
-        working-directory: ./task-schedule-email-sender
-        run: mvn clean package -DskipTests
-
       - name: Log in to Docker Hub
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
-      # Сборка Docker образа, находясь в директории сервиса
-      - name: Build Docker image
-        working-directory: ./task-schedule-email-sender  # указываем директорию с Dockerfile
-        run: docker build -t dragomirovcode/task-schedule-email-sender:latest .
+      # Сборка и публикация образа для task-schedule-backend
+      - name: Build Docker image for Backend
+        working-directory: ./task-schedule-backend  # директория с Dockerfile для backend
+        run: |
+          mvn clean package -DskipTests
+          docker build -t dragomirovcode/task-schedule-backend:latest .
+          docker push dragomirovcode/task-schedule-backend:latest
 
-      - name: Push Docker image
-        run: docker push dragomirovcode/task-schedule-email-sender:latest
+      # Сборка и публикация образа для task-schedule-email-sender
+      - name: Build Docker image for Email Sender
+        working-directory: ./task-schedule-email-sender  # директория с Dockerfile для email sender
+        run: |
+          mvn clean package -DskipTests
+          docker build -t dragomirovcode/task-schedule-email-sender:latest .
+          docker push dragomirovcode/task-schedule-email-sender:latest
+
+      # Сборка и публикация образа для task-schedule-front
+      - name: Build Docker image for Frontend
+        working-directory: ./task-schedule-front  # директория с Dockerfile для frontend
+        run: |
+          mvn clean package -DskipTests
+          docker build -t dragomirovcode/task-schedule-front:latest .
+          docker push dragomirovcode/task-schedule-front:latest
+
+      # Сборка и публикация образа для task-scheduler
+      - name: Build Docker image for Scheduler
+        working-directory: ./task-scheduler  # директория с Dockerfile для scheduler
+        run: |
+          mvn clean package -DskipTests
+          docker build -t dragomirovcode/task-scheduler:latest .
+          docker push dragomirovcode/task-scheduler:latest
