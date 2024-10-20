@@ -18,7 +18,8 @@ jobs:
         with:
           java-version: '17'
           distribution: 'adopt'
-          
+
+      # Переходим в директорию сервиса, где находится Dockerfile
       - name: Navigate to backend folder
         working-directory: ./task-schedule-backend
         run: mvn clean package -DskipTests
@@ -29,8 +30,10 @@ jobs:
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_TOKEN }}
 
+      # Сборка Docker образа, находясь в директории сервиса
       - name: Build Docker image
-        run: docker build -t yourdockerhubusername/task-schedule-backend:latest .
+        working-directory: ./task-schedule-backend  # указываем директорию с Dockerfile
+        run: docker build -t dragomirovcode/task-schedule-backend:latest .
 
       - name: Push Docker image
-        run: docker push yourdockerhubusername/task-schedule-backend:latest
+        run: docker push dragomirovcode/task-schedule-backend:latest
