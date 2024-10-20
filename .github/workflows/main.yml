@@ -21,7 +21,7 @@ jobs:
 
       # Переходим в директорию сервиса, где находится Dockerfile
       - name: Navigate to backend folder
-        working-directory: ./task-schedule-backend
+        working-directory: ./task-schedule-email-sender
         run: mvn clean package -DskipTests
 
       - name: Log in to Docker Hub
@@ -33,7 +33,7 @@ jobs:
       # Сборка Docker образа, находясь в директории сервиса
       - name: Build Docker image
         working-directory: ./task-schedule-backend  # указываем директорию с Dockerfile
-        run: docker build -t dragomirovcode/task-schedule-backend:latest .
+        run: docker build -t dragomirovcode/task-schedule-email-sender:latest .
 
       - name: Push Docker image
-        run: docker push dragomirovcode/task-schedule-backend:latest
+        run: docker push dragomirovcode/task-schedule-email-sender:latest
