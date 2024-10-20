@@ -11,4 +11,4 @@ COPY --from=build /app/target/task-scheduler.jar /app/task-scheduler.jar
 
 EXPOSE 8083
 
-ENTRYPOINT ["java", "-jar", "/app/ROOT.jar", "--spring.profiles.active=docker"]
+ENTRYPOINT ["java", "-jar", "/app/task-scheduler.jar", "--spring.profiles.active=docker"]

@@ -11,4 +11,4 @@ COPY --from=build /app/target/task-schedule-email-sender.jar /app/task-schedule-
 
 EXPOSE 8082
 
-ENTRYPOINT ["java", "-jar", "/app/ROOT.jar", "--spring.profiles.active=docker"]
+ENTRYPOINT ["java", "-jar", "/app/task-schedule-email-sender.jar", "--spring.profiles.active=docker"]
