@@ -1,4 +1,4 @@
-name: Build and Push Docker Image
+name: Build and Push Docker Image for Backend
 
 on:
   push:
@@ -18,8 +18,9 @@ jobs:
         with:
           java-version: '17'
           distribution: 'adopt'
-
-      - name: Build with Maven
+          
+      - name: Navigate to backend folder
+        working-directory: ./task-schedule-backend
         run: mvn clean package -DskipTests
 
       - name: Log in to Docker Hub
@@ -29,7 +30,7 @@ jobs:
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
 
       - name: Build Docker image
-        run: docker build -t yourdockerhubusername/task-tracker-backend:latest .
+        run: docker build -t yourdockerhubusername/task-schedule-backend:latest .
 
       - name: Push Docker image
-        run: docker push yourdockerhubusername/task-tracker-backend:latest
+        run: docker push yourdockerhubusername/task-schedule-backend:latest
