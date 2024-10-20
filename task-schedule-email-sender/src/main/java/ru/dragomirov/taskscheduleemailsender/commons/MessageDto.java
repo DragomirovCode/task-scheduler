@@ -1,4 +1,4 @@
-package ru.dragomirov.taskschedulercommondto.kafka;
+package ru.dragomirov.taskscheduleemailsender.commons;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

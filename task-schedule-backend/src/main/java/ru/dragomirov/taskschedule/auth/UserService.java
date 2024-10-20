@@ -13,8 +13,8 @@ import ru.dragomirov.taskschedule.commons.DuplicateException;
 import ru.dragomirov.taskschedule.commons.ResourceNotFoundException;
 import ru.dragomirov.taskschedule.commons.DualServiceUserMapper;
 import ru.dragomirov.taskschedule.commons.kafka.EmailProducer;
-import ru.dragomirov.taskschedulercommondto.kafka.MessageDto;
-import ru.dragomirov.taskschedulercommondto.kafka.UserDto;
+import ru.dragomirov.taskschedule.commons.kafka.message.MessageDto;
+import ru.dragomirov.taskschedule.commons.kafka.message.UserDto;
 
 import java.util.Collections;
 import java.util.HashMap;

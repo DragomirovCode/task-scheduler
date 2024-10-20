@@ -15,7 +15,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.mail.javamail.MimeMessageHelper;
-import ru.dragomirov.taskschedulercommondto.kafka.MessageDto;
+import ru.dragomirov.taskscheduleemailsender.commons.MessageDto;
+
 
 @Service
 @RequiredArgsConstructor

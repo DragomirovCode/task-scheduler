@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RestController;
 import ru.dragomirov.taskschedule.auth.User;
 import ru.dragomirov.taskschedule.commons.DualServiceUserMapper;
 import ru.dragomirov.taskschedule.auth.UserService;
-import ru.dragomirov.taskschedulercommondto.kafka.UserDto;
+import ru.dragomirov.taskschedule.commons.kafka.message.UserDto;
 
 import java.util.List;
 

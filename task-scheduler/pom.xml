@@ -98,13 +98,6 @@
         </dependency>
 
         <dependency>
-            <groupId>ru.dragomirov</groupId>
-            <artifactId>task-scheduler-common-dto</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.mockito</groupId>
             <artifactId>mockito-core</artifactId>
             <version>5.0.0</version>

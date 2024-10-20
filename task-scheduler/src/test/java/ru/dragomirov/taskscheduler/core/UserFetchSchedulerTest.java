@@ -7,9 +7,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import ru.dragomirov.taskscheduler.commons.EmailProducer;
-import ru.dragomirov.taskschedulercommondto.kafka.MessageDto;
-import ru.dragomirov.taskschedulercommondto.kafka.TaskDto;
-import ru.dragomirov.taskschedulercommondto.kafka.UserDto;
 
 import java.time.LocalDate;
 import java.util.Arrays;
@@ -18,6 +15,9 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import org.junit.jupiter.api.extension.ExtendWith;
+import ru.dragomirov.taskscheduler.commons.MessageDto;
+import ru.dragomirov.taskscheduler.commons.TaskDto;
+import ru.dragomirov.taskscheduler.commons.UserDto;
 
 @ExtendWith(MockitoExtension.class)
 public class UserFetchSchedulerTest {

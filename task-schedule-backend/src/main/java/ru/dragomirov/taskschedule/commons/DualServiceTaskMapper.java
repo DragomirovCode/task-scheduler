@@ -1,8 +1,9 @@
 package ru.dragomirov.taskschedule.commons;
 
 import org.mapstruct.Mapper;
+import ru.dragomirov.taskschedule.commons.kafka.message.TaskDto;
 import ru.dragomirov.taskschedule.core.task.Task;
-import ru.dragomirov.taskschedulercommondto.kafka.TaskDto;
+
 
 import java.util.List;
 

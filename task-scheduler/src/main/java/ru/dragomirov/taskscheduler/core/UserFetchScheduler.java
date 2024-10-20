@@ -4,9 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import ru.dragomirov.taskscheduler.commons.EmailProducer;
-import ru.dragomirov.taskschedulercommondto.kafka.MessageDto;
-import ru.dragomirov.taskschedulercommondto.kafka.TaskDto;
-import ru.dragomirov.taskschedulercommondto.kafka.UserDto;
+import ru.dragomirov.taskscheduler.commons.MessageDto;
+import ru.dragomirov.taskscheduler.commons.TaskDto;
+import ru.dragomirov.taskscheduler.commons.UserDto;
+
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -20,7 +21,7 @@ public class UserFetchScheduler {
     private final UserServiceClient userServiceClient;
     private final EmailProducer emailProducer;
 
-    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(fixedRate = 30000)
     public void getPendingTasksForDay() {
         List<UserDto> users = userServiceClient.getAllUsers();
         String[] targetStatuses = {"TODO", "IN_PROGRESS"};
@@ -35,7 +36,7 @@ public class UserFetchScheduler {
         });
     }
 
-    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(fixedRate = 30000)
     public void getAllTaskForDay() {
         List<UserDto> users = userServiceClient.getAllUsers();
         String[] incompleteStatuses = {"TODO", "IN_PROGRESS"};
@@ -60,7 +61,7 @@ public class UserFetchScheduler {
         });
     }
 
-    @Scheduled(cron = "0 0 0 * * ?")
+    @Scheduled(fixedRate = 30000)
     public void getCompletedTasksForDay() {
         List<UserDto> users = userServiceClient.getAllUsers();
         String[] targetStatuses = {"DONE"};
