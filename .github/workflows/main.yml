@@ -29,6 +29,7 @@ jobs:
       - name: Build and Push Backend Image
         working-directory: ./task-schedule-backend
         run: |
+          mvn clean package -DskipTests
           docker build -t dragomirovcode/task-schedule-backend:latest .
           docker push dragomirovcode/task-schedule-backend:latest
 
@@ -36,6 +37,7 @@ jobs:
       - name: Build and Push Email Sender Image
         working-directory: ./task-schedule-email-sender
         run: |
+          mvn clean package -DskipTests
           docker build -t dragomirovcode/task-schedule-email-sender:latest .
           docker push dragomirovcode/task-schedule-email-sender:latest
 
@@ -43,6 +45,7 @@ jobs:
       - name: Build and Push Frontend Image
         working-directory: ./task-schedule-front
         run: |
+          mvn clean package -DskipTests
           docker build -t dragomirovcode/task-schedule-front:latest .
           docker push dragomirovcode/task-schedule-front:latest
 
@@ -50,5 +53,6 @@ jobs:
       - name: Build and Push Scheduler Image
         working-directory: ./task-scheduler
         run: |
+          mvn clean package -DskipTests
           docker build -t dragomirovcode/task-scheduler:latest .
           docker push dragomirovcode/task-scheduler:latest
