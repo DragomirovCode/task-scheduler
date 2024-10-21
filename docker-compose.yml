@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
   redis:
     image: redis:latest
@@ -17,7 +16,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
   db:
     image: mysql:latest
     container_name: my-mysql
@@ -37,33 +35,6 @@ services:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
       timeout: 10s
-      retries: 5
-
-  app:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    container_name: cloud-file-storage-app
-    depends_on:
-      redis:
-        condition: service_healthy
-      db:
-        condition: service_healthy
-    environment:
-      SPRING_DATASOURCE_URL: jdbc:mysql://my-mysql:3306/database
-      SPRING_DATASOURCE_USERNAME: my_mysql_username
-      SPRING_DATASOURCE_PASSWORD: my_mysql_password
-      SPRING_DATA_REDIS_URL: redis://my-redis:6379
-      SPRING_DATA_REDIS_HOST: my-redis
-      SPRING_DATA_REDIS_PORT: 6379
-      BACKEND_URL: http://task-schedule-backend:8080
-      EMAIL_SENDER_URL: http://task-schedule-email-sender:8082
-      TASK_SCHEDULER_URL: http://task-scheduler:8083
-      FRONTEND_URL: http://task-schedule-front:8081
-    ports:
-      - "8085:8080"
-    networks:
-      - webapp
 
   zookeeper:
     image: bitnami/zookeeper:3.8.0
@@ -81,7 +52,6 @@ services:
       interval: 30s
       timeout: 5s
       retries: 5
-
   kafka:
     image: bitnami/kafka:3.8.0
     container_name: my-kafka
@@ -102,8 +72,8 @@ services:
       - webapp
 
   backend:
-    image: dragomirovcode/task-schedule-backend:latest
-    container_name: task-schedule-backend
+    image: dragomirovcode/task-schedule-backend
+    container_name: app
     depends_on:
       kafka:
         condition: service_healthy
@@ -118,7 +88,7 @@ services:
       retries: 5
 
   email-sender:
-    image: dragomirovcode/task-schedule-email-sender:latest
+    image: dragomirovcode/task-schedule-email-sender
     container_name: task-schedule-email-sender
     depends_on:
       backend:
@@ -134,23 +104,23 @@ services:
       retries: 5
 
   task-scheduler:
-    image: dragomirovcode/task-scheduler:latest
+    image: dragomirovcode/task-scheduler:latest  # Указываем имя образа с Docker Hub
     container_name: task-scheduler
     depends_on:
       email-sender:
         condition: service_healthy
     ports:
-      - "8083:8083"  # Task Scheduler на порту 8083
+      - "8083:8083"
     networks:
       - webapp
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8083/actuator/health || exit 1"]
+      test: [ "CMD-SHELL", "curl -f http://localhost:8083/actuator/health || exit 1" ]
       interval: 30s
       timeout: 10s
       retries: 5
 
   frontend:
-    image: dragomirovcode/task-schedule-front:latest
+    image: dragomirovcode/task-schedule-front
     container_name: task-schedule-front
     depends_on:
       task-scheduler:
@@ -164,7 +134,6 @@ services:
       interval: 30s
       timeout: 10s
       retries: 5
-
 volumes:
   mysql_data:
     driver: local
@@ -172,7 +141,6 @@ volumes:
     driver: local
   kafka_data:
     driver: local
-
 networks:
   webapp:
     driver: bridge
