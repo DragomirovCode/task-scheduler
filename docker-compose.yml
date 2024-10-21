@@ -47,7 +47,9 @@ services:
       ZOO_PORT: 2181
       ALLOW_ANONYMOUS_LOGIN: "yes"
     networks:
-      - webapp
+      webapp:
+        aliases:
+          - my-zookeeper
 
   kafka:
     image: bitnami/kafka:3.8.0
@@ -61,81 +63,14 @@ services:
       KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://my-kafka:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
-      KAFKA_ZOOKEEPER_CONNECT: "my-zookeeper:2181"
-      KAFKA_LISTENERS: "INTERNAL://:29092,EXTERNAL://:9092"
-      KAFKA_TOPIC: "EMAIL_SENDING_TASKS"
-      ALLOW_PLAINTEXT_LISTENER: "yes"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LISTENERS: INTERNAL://:29092,EXTERNAL://:9092
+      KAFKA_TOPIC: EMAIL_SENDING_TASKS
+      ALLOW_PLAINTEXT_LISTENER: yes
     networks:
-      - webapp
-
-  backend:
-    image: dragomirovcode/task-schedule-backend
-    container_name: app
-    depends_on:
-      kafka:
-        condition: service_healthy
-    ports:
-      - "8080:8080"  # Backend на порту 8080
-    networks:
-      - webapp
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-
-  email-sender:
-    image: dragomirovcode/task-schedule-email-sender
-    container_name: task-schedule-email-sender
-    depends_on:
-      backend:
-        condition: service_healthy
-    ports:
-      - "8082:8082"  # Email Sender на порту 8082
-    networks:
-      - webapp
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8082/actuator/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-
-  task-scheduler:
-    image: dragomirovcode/task-scheduler:latest  # Указываем имя образа с Docker Hub
-    container_name: task-scheduler
-    depends_on:
-      email-sender:
-        condition: service_healthy
-    ports:
-      - "8083:8083"
-    networks:
-      - webapp
-    healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://localhost:8083/actuator/health || exit 1" ]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-
-  frontend:
-    image: dragomirovcode/task-schedule-front
-    container_name: task-schedule-front
-    depends_on:
-      task-scheduler:
-        condition: service_healthy
-    ports:
-      - "8081:8081"  # Frontend на порту 8081
-    networks:
-      - webapp
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8081/actuator/health || exit 1"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-volumes:
-  mysql_data:
-    driver: local
-  redis_data:
-    driver: local
+      webapp:
+        aliases:
+          - my-kafka
 
 networks:
   webapp:
