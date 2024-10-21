@@ -7,8 +7,8 @@ RUN mvn clean package -DskipTests
 # Stage 2: Легковесный образ с JRE
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
-COPY --from=build /app/target/task-scheduler.jar /app/task-scheduler.jar
+COPY --from=build /app/target/ROOT.jar /app/ROOT.jar
 
 EXPOSE 8083
 
-ENTRYPOINT ["java", "-jar", "/app/task-scheduler.jar", "--spring.profiles.active=docker"]
+ENTRYPOINT ["java", "-jar", "/app/ROOT.jar", "--spring.profiles.active=docker"]
