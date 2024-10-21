@@ -82,7 +82,7 @@ jobs:
             fi
 
             # Загрузка вашего docker-compose.yml из GitHub
-            curl -L -o ~/docker-compose.yml https://raw.githubusercontent.com/DragomirovCode/task-scheduler/main/docker-compose.yml
+            curl -L -o ~/docker-compose.yml https://raw.githubusercontent.com/DragomirovCode/task-scheduler/docker-compose.yml
 
             # Переход в директорию, где будет лежать docker-compose.yml
             cd ~;  # или cd ~/task-scheduler, если нужно
