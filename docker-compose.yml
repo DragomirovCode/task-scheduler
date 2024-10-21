@@ -16,6 +16,7 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
   db:
     image: mysql:latest
     container_name: my-mysql
@@ -47,11 +48,7 @@ services:
       ALLOW_ANONYMOUS_LOGIN: "yes"
     networks:
       - webapp
-    healthcheck:
-      test: ["CMD", "echo", "ruok", "|", "nc", "localhost", "2181", "|", "grep", "imok"]
-      interval: 30s
-      timeout: 5s
-      retries: 5
+
   kafka:
     image: bitnami/kafka:3.8.0
     container_name: my-kafka
@@ -61,7 +58,7 @@ services:
     ports:
       - "9092:9092"
     environment:
-      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://localhost:9092
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://my-kafka:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_ZOOKEEPER_CONNECT: "my-zookeeper:2181"
@@ -139,6 +136,7 @@ volumes:
     driver: local
   redis_data:
     driver: local
+
 networks:
   webapp:
     driver: bridge
