@@ -72,6 +72,12 @@ services:
         aliases:
           - my-kafka
 
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+
 networks:
   webapp:
     driver: bridge
