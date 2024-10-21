@@ -5,14 +5,14 @@ services:
     container_name: my-redis
     restart: always
     volumes:
-      - redis_data:/var/lib/redis
-      - ./redis-config:/usr/local/etc/redis/redis.conf
+      - ~/data/redis:/var/lib/redis
+      - ~/data/redis/config:/usr/local/etc/redis/redis.conf
     networks:
       webapp:
         aliases:
           - my-redis
     healthcheck:
-      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      test: [ "CMD-SHELL", "redis-cli ping | grep PONG" ]
       interval: 10s
       timeout: 5s
       retries: 5
