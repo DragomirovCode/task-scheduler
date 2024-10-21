@@ -27,28 +27,28 @@ jobs:
 
       # Сборка и публикация образов для всех сервисов
       - name: Build Docker image for Backend
-        working-directory: ./task-schedule-backend
+        working-directory: ./task-schedule/task-schedule-backend  # Директория с Dockerfile для backend
         run: |
           mvn clean package -DskipTests
           docker build -t dragomirovcode/task-schedule-backend:latest .
           docker push dragomirovcode/task-schedule-backend:latest
 
       - name: Build Docker image for Email Sender
-        working-directory: ./task-schedule-email-sender
+        working-directory: ./task-schedule/task-schedule-email-sender  # Директория с Dockerfile для email sender
         run: |
           mvn clean package -DskipTests
           docker build -t dragomirovcode/task-schedule-email-sender:latest .
           docker push dragomirovcode/task-schedule-email-sender:latest
 
       - name: Build Docker image for Frontend
-        working-directory: ./task-schedule-front
+        working-directory: ./task-schedule/task-schedule-front  # Директория с Dockerfile для frontend
         run: |
           mvn clean package -DskipTests
           docker build -t dragomirovcode/task-schedule-front:latest .
           docker push dragomirovcode/task-schedule-front:latest
 
       - name: Build Docker image for Scheduler
-        working-directory: ./task-scheduler
+        working-directory: ./task-schedule/task-scheduler  # Директория с Dockerfile для scheduler
         run: |
           mvn clean package -DskipTests
           docker build -t dragomirovcode/task-scheduler:latest .
