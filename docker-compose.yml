@@ -76,10 +76,19 @@ services:
     image: dragomirovcode/task-schedule-backend
     container_name: app
     depends_on:
-      kafka:
-        condition: service_healthy
+      - db
+      - kafka
+      - redis
     ports:
       - "8080:8080"  # Backend на порту 8080
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      SPRING_DATASOURCE_URL: jdbc:mysql://my-mysql:3306/database
+      SPRING_DATASOURCE_USERNAME: my_mysql_username
+      SPRING_DATASOURCE_PASSWORD: my_mysql_password
+      SPRING_DATA_REDIS_URL: redis://my-redis:6379
+      SPRING_DATA_REDIS_HOST: my-redis
+      SPRING_DATA_REDIS_PORT: 6379
     networks:
       - webapp
     healthcheck:
