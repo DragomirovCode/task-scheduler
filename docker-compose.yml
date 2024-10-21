@@ -1,0 +1,188 @@
+version: '3.8'
+
+services:
+  redis:
+    image: redis:latest
+    container_name: my-redis
+    restart: always
+    volumes:
+      - redis_data:/var/lib/redis
+      - ./redis-config:/usr/local/etc/redis/redis.conf
+    networks:
+      webapp:
+        aliases:
+          - my-redis
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli ping | grep PONG"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  db:
+    image: mysql:latest
+    container_name: my-mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_USER: my_mysql_username
+      MYSQL_PASSWORD: my_mysql_password
+      MYSQL_DATABASE: database
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      webapp:
+        aliases:
+          - my-mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cloud-file-storage-app
+    depends_on:
+      redis:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://my-mysql:3306/database
+      SPRING_DATASOURCE_USERNAME: my_mysql_username
+      SPRING_DATASOURCE_PASSWORD: my_mysql_password
+      SPRING_DATA_REDIS_URL: redis://my-redis:6379
+      SPRING_DATA_REDIS_HOST: my-redis
+      SPRING_DATA_REDIS_PORT: 6379
+      BACKEND_URL: http://task-schedule-backend:8080
+      EMAIL_SENDER_URL: http://task-schedule-email-sender:8082
+      TASK_SCHEDULER_URL: http://task-scheduler:8083
+      FRONTEND_URL: http://task-schedule-front:8081
+    ports:
+      - "8085:8080"
+    networks:
+      - webapp
+
+
+  zookeeper:
+    image: bitnami/zookeeper:3.8.0
+    container_name: my-zookeeper
+    restart: on-failure
+    ports:
+      - "2181:2181"
+    environment:
+      ZOO_PORT: 2181
+      ALLOW_ANONYMOUS_LOGIN: "yes"
+    networks:
+      - webapp
+    healthcheck:
+      test: ["CMD", "echo", "ruok", "|", "nc", "localhost", "2181", "|", "grep", "imok"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+
+  kafka:
+    image: bitnami/kafka:3.8.0
+    container_name: my-kafka
+    restart: on-failure
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      KAFKA_ZOOKEEPER_CONNECT: "my-zookeeper:2181"
+      KAFKA_LISTENERS: "INTERNAL://:29092,EXTERNAL://:9092"
+      KAFKA_TOPIC: "EMAIL_SENDING_TASKS"
+      ALLOW_PLAINTEXT_LISTENER: "yes"
+    networks:
+      - webapp
+
+  backend:
+    build:
+      context: ../task-schedule/task-schedule-backend
+      dockerfile: Dockerfile
+    container_name: task-schedule-backend
+    depends_on:
+      kafka:
+        condition: service_healthy
+    ports:
+      - "8080:8080"  # Backend на порту 8080
+    networks:
+      - webapp
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  email-sender:
+    build:
+      context: ../task-schedule/task-schedule-email-sender
+      dockerfile: Dockerfile
+    container_name: task-schedule-email-sender
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "8082:8082"  # Email Sender на порту 8082
+    networks:
+      - webapp
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8082/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  task-scheduler:
+    build:
+      context: ../task-schedule/task-scheduler
+      dockerfile: Dockerfile
+    container_name: task-scheduler
+    depends_on:
+      email-sender:
+        condition: service_healthy
+    ports:
+      - "8083:8083"  # Task Scheduler на порту 8083
+    networks:
+      - webapp
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8083/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  frontend:
+    build:
+      context: ../task-schedule/task-schedule-front
+      dockerfile: Dockerfile
+    container_name: task-schedule-front
+    depends_on:
+      task-scheduler:
+        condition: service_healthy
+    ports:
+      - "8081:8081"  # Frontend на порту 8081
+    networks:
+      - webapp
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8081/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  mysql_data:
+    driver: local
+  redis_data:
+    driver: local
+  kafka_data:
+    driver: local
+
+networks:
+  webapp:
+    driver: bridge
+    name: webapp
