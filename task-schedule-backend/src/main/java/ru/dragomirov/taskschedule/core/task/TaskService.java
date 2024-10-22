@@ -80,9 +80,18 @@ public class TaskService {
             @CachePut(value = "TaskService::getByTitle", key = "#updateTask.title")}
     )
     public void update(Long id, Task updateTask, User user) {
-        updateTask.setId(id);
-        updateTask.setAuthor(user);
-        taskRepository.save(updateTask);
+        Task existingTask = taskRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Task not found"));
+
+        existingTask.setTitle(updateTask.getTitle());
+        existingTask.setDescription(updateTask.getDescription());
+        existingTask.setStatus(updateTask.getStatus());
+        existingTask.setExpirationData(updateTask.getExpirationData());
+
+        existingTask.setAuthor(user);
+        existingTask.setCreatedDate(existingTask.getCreatedDate());
+
+        taskRepository.save(existingTask);
     }
 
     @Transactional
