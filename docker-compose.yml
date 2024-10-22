@@ -112,6 +112,37 @@ services:
       timeout: 10s
       retries: 5
 
+  email-sender:
+    image: dragomirovcode/task-schedule-email-sender
+    container_name: task-schedule-email-sender
+    depends_on:
+      - backend
+    ports:
+      - "8082:8082"
+    networks:
+      - webapp
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8082/actuator/health || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  task-scheduler:
+    image: dragomirovcode/task-scheduler:latest
+    container_name: task-scheduler
+    depends_on:
+      - backend
+      - email-sender
+    ports:
+      - "8083:8083"
+    networks:
+      - webapp
+    healthcheck:
+      test: [ "CMD-SHELL", "curl -f http://localhost:8083/actuator/health || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
 volumes:
   mysql_data:
     driver: local
