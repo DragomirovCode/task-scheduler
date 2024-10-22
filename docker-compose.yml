@@ -60,7 +60,7 @@ services:
     ports:
       - "9092:9092"
     environment:
-      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://kafka:9092
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://localhost:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -120,14 +120,9 @@ services:
       - backend
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
-      SPRING_MAIL_HOST: smtp.gmail.com
-      SPRING_MAIL_PORT: 587
       SPRING_MAIL_USERNAME: mikhail.dragomirov.02@gmail.com
       SPRING_MAIL_PASSWORD: jkqkensnijdkbugg
-      SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: true
-      SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: true
-      SPRING_MAIL_PROPERTIES_MAIL_DEBUG: true
-      SPRING_MY_EMAIL: mikhail.dragomirov.02@gmail.com
+      SPRING_MAIL_HOST: smtp.gmail.com
     ports:
       - "8082:8082"
     networks:
