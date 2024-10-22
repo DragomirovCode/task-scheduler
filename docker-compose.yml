@@ -90,6 +90,7 @@ services:
       SPRING_DATA_REDIS_HOST: my-redis
       SPRING_DATA_REDIS_PORT: 6379
       JWT_SECRET: YXNkZmFzZmdhc2YzNDEyMzQyY3ZhZGZzZmE
+      SPRING_KAFKA_TOPIC_EMAIL: EMAIL_SENDING_TASKS
     networks:
       - webapp
     healthcheck:
@@ -120,9 +121,16 @@ services:
       - backend
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:29092
+      SPRING_KAFKA_CONSUMER_GROUP_ID: email_group
+      SPRING_KAFKA_TOPIC_EMAIL: EMAIL_SENDING_TASKS
+      SPRING_MAIL_HOST: smtp.gmail.com
+      SPRING_MAIL_PORT: 587
       SPRING_MAIL_USERNAME: mikhail.dragomirov.02@gmail.com
       SPRING_MAIL_PASSWORD: jkqkensnijdkbugg
-      SPRING_MAIL_HOST: smtp.gmail.com
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH: true
+      SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE: true
+      SPRING_MAIL_PROPERTIES_MAIL_DEBUG: true
+      SPRING_MY_EMAIL: mikhail.dragomirov.02@gmail.com
     ports:
       - "8082:8082"
     networks:
@@ -144,6 +152,7 @@ services:
       SPRING_DATA_REDIS_URL: redis://my-redis:6379
       SPRING_DATA_REDIS_HOST: my-redis
       SPRING_DATA_REDIS_PORT: 6379
+      SPRING_KAFKA_TOPIC_EMAIL: EMAIL_SENDING_TASKS
     ports:
       - "8083:8083"
     networks:
