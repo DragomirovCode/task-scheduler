@@ -17,7 +17,7 @@ public class UserServiceClient {
 
     public List<UserDto> getAllUsers() {
         ResponseEntity<List<UserDto>> response = restTemplate.exchange(
-                "http://194.87.44.242:8080/api/user/get-all",
+                "http://194.87.26.227:8080/api/user/get-all",
                 HttpMethod.GET,
                 null,
                 new ParameterizedTypeReference<List<UserDto>>() {}

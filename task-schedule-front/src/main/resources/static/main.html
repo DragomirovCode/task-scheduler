@@ -152,7 +152,7 @@
     $(document).ready(function () {
         // Load user info
         $.ajax({
-            url: 'http://194.87.44.242:8080/api/user',
+            url: 'http://194.87.26.227:8080/api/user',
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
@@ -174,8 +174,8 @@
         // Load tasks function
         function loadTasks(status = 'ALL') {
             let url = status === 'ALL'
-                ? 'http://194.87.44.242:8080/api/tasks/get-all'
-                : `http://194.87.44.242:8080/api/tasks/get-list-status?status=${status}`;
+                ? 'http://194.87.26.227:8080/api/tasks/get-all'
+                : `http://194.87.26.227:8080/api/tasks/get-list-status?status=${status}`;
 
             $.ajax({
                 url: url,
@@ -273,7 +273,7 @@
         // Update task status function
         function updateTaskStatus(id, direction) {
             $.ajax({
-                url: `http://194.87.44.242:8080/api/tasks/update-status/${id}?direction=${direction}`,  // Передаем параметр direction
+                url: `http://194.87.26.227:8080/api/tasks/update-status/${id}?direction=${direction}`,  // Передаем параметр direction
                 method: 'PATCH',
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('jwtToken'),
@@ -310,7 +310,7 @@
         // Delete task function
         function deleteTask(id) {
             $.ajax({
-                url: `http://194.87.44.242:8080/api/tasks/delete/${id}`,
+                url: `http://194.87.26.227:8080/api/tasks/delete/${id}`,
                 method: 'DELETE',
                 headers: {
                     'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')

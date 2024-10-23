@@ -79,7 +79,7 @@
 
     // Load task details to edit
     $.ajax({
-      url: `http://194.87.44.242:8080/api/tasks/${taskId}`,
+      url: `http://194.87.26.227:8080/api/tasks/${taskId}`,
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
@@ -139,7 +139,7 @@
       };
 
       $.ajax({
-        url: `http://194.87.44.242:8080/api/tasks/update/${taskId}`,
+        url: `http://194.87.26.227:8080/api/tasks/update/${taskId}`,
         method: 'PATCH',
         headers: {
           'Authorization': 'Bearer ' + localStorage.getItem('jwtToken'),
