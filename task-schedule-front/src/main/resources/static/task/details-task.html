@@ -62,7 +62,7 @@
 
         // Загрузка деталей задачи
         $.ajax({
-            url: `http://194.87.26.227:8080/api/tasks/${taskId}`,
+            url: `http://185.125.202.6:8080/api/tasks/${taskId}`,
             method: 'GET',
             headers: {
                 'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
